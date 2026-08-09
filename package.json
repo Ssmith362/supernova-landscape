@@ -14,21 +14,22 @@
     "typecheck": "tsc --noEmit",
     "audit:site": "node scripts/audit-site.mjs"
   },
+  "//dependencies": "Anything needed to BUILD or RUN in production lives here, not in devDependencies. Managed Node hosts (Hostinger included) commonly set NODE_ENV=production before installing, which makes npm skip devDependencies entirely — so a build-time package parked in devDependencies fails the deploy with a missing-module error. sharp is here because Next uses it for runtime image optimisation; without it Next silently serves unoptimised originals with nothing in the logs.",
   "dependencies": {
-    "next": "16.3.0",
-    "react": "19.2.8",
-    "react-dom": "19.2.8"
-  },
-  "devDependencies": {
-    "@eslint/eslintrc": "^3.3.1",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
-    "eslint": "^9.39.1",
-    "eslint-config-next": "16.3.0",
+    "next": "16.3.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
     "sharp": "^0.35.3",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3"
+  },
+  "//devDependencies": "Local development and CI only. Nothing here is required by `next build`.",
+  "devDependencies": {
+    "eslint": "^9.39.1",
+    "eslint-config-next": "16.3.0"
   }
 }
