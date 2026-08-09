@@ -2,8 +2,32 @@
 
 Production website for **Supernova Landscape Company LLC**, Spokane WA.
 
-Next.js 16 · App Router · TypeScript · Tailwind CSS 4 · deployed to Hostinger
+Next.js 15.5 · App Router · TypeScript · Tailwind CSS 4 · deployed to Hostinger
 Node.js Web Apps.
+
+> ### ⚠️ Do not upgrade to Next.js 16
+>
+> Hostinger's build image ships **glibc 2.28**. Next 16's native SWC binary
+> requires **glibc 2.30**, so `next build` fails there with
+> `GLIBC_2.29 not found`, falls back to the WASM compiler, and then dies
+> loading the config. Next 15.5.7 requires only glibc 2.17 and builds fine.
+>
+> Verified by reading the required GLIBC symbol versions out of each binary:
+>
+> | Package | Needs glibc |
+> |---|---|
+> | `@next/swc-linux-x64-gnu` 16.3.0 | 2.30 ❌ |
+> | `@next/swc-linux-x64-gnu` 15.5.7 | 2.17 ✅ |
+> | `@img/sharp-linux-x64` 0.35 | 2.17 ✅ |
+> | `@img/sharp-libvips-linux-x64` | 2.25 ✅ |
+>
+> Before bumping the major version, check the new binary the same way, or
+> confirm Hostinger has moved to a newer build image.
+>
+> Related: the Next config is **`next.config.mjs`, not `.ts`** — on purpose. A
+> TypeScript config has to be compiled by SWC before Next can read it, which
+> is the second thing that broke on Hostinger. A `.mjs` config is read
+> directly and cannot fail that way. Do not convert it back.
 
 Built to replace the four-page Webflow site, addressing the 34 findings in the
 July 2026 audit. See [`AUDIT-RESOLUTION.md`](./AUDIT-RESOLUTION.md) for the
@@ -145,6 +169,12 @@ builds from a GitHub repository.
    - **Install command:** `npm ci`
    - **Build command:** `npm run build`
    - **Start command:** `npm start`
+
+   > Hostinger sets `NODE_ENV=production` before installing, which makes npm
+   > skip `devDependencies`. Everything `next build` needs is therefore in
+   > `dependencies` — see the note in `package.json`. Do not move TypeScript,
+   > Tailwind or sharp back into `devDependencies`; the build will fail, and
+   > moving sharp fails *silently* at runtime by serving unoptimised images.
    - **Entry / port:** Next reads `PORT` from the environment automatically —
      leave Hostinger's default unless it asks for an explicit port.
 4. Add every environment variable from section 3. `NEXT_PUBLIC_SITE_URL` must be
