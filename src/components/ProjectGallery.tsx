@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Project } from "@/content/types";
 import { getService } from "@/content/services";
+import { ImageReveal } from "@/components/motion/ImageReveal";
 
 type Slide = {
   src: string;
@@ -134,14 +135,19 @@ export function ProjectGallery({ projects }: { projects: Project[] }) {
               className="group relative block w-full overflow-hidden bg-sage-100"
               style={{ aspectRatio: "4 / 3" }}
             >
-              <Image
-                src={slide.src}
-                alt={slide.alt}
-                fill
-                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 45vw, 30vw"
-                loading={i < 4 ? "eager" : "lazy"}
-                className="object-cover transition-transform duration-500 group-hover:scale-[1.05]"
-              />
+              <ImageReveal
+                className="absolute inset-0"
+                delay={Math.min(i, 5) * 60}
+              >
+                <Image
+                  src={slide.src}
+                  alt={slide.alt}
+                  fill
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 45vw, 30vw"
+                  loading={i < 4 ? "eager" : "lazy"}
+                  className="object-cover transition-transform duration-500 group-hover:scale-[1.025]"
+                />
+              </ImageReveal>
               <span className="absolute inset-0 bg-gradient-to-t from-forest-950/75 via-forest-950/5 to-transparent opacity-80 transition-opacity group-hover:opacity-95" />
               {slide.stage && (
                 <span
@@ -168,7 +174,7 @@ export function ProjectGallery({ projects }: { projects: Project[] }) {
       <dialog
         ref={dialogRef}
         aria-label="Project photo viewer"
-        className="m-auto max-h-[92dvh] w-[min(72rem,94vw)] bg-transparent p-0 backdrop:bg-forest-950/88 backdrop:backdrop-blur-sm"
+        className="gallery-dialog m-auto max-h-[92dvh] w-[min(72rem,94vw)] bg-transparent p-0 backdrop:bg-forest-950/88 backdrop:backdrop-blur-sm"
       >
         {active && (
           <div className="flex max-h-[92dvh] flex-col bg-bone">

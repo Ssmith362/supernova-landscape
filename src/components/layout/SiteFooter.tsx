@@ -10,6 +10,7 @@ import {
 } from "@/config/site";
 import { PhoneLink } from "@/components/PhoneLink";
 import { Stars } from "@/components/Stars";
+import { Reveal } from "@/components/motion/Reveal";
 
 export function SiteFooter() {
   // Generated once, in one place — fixes the 2025/2026 mismatch on the old site.
@@ -17,7 +18,11 @@ export function SiteFooter() {
 
   return (
     <footer className="mt-24 border-t-4 border-gold-500 bg-forest-950 text-sage-200 pb-action-bar">
-      <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8">
+      <Reveal
+        as="div"
+        distance={14}
+        className="mx-auto max-w-7xl px-5 py-14 sm:px-8"
+      >
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,2fr)]">
           {/* Business identity + NAP */}
           <div>
@@ -194,7 +199,7 @@ export function SiteFooter() {
             </Link>
           </div>
         </div>
-      </div>
+      </Reveal>
     </footer>
   );
 }

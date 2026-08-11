@@ -61,8 +61,10 @@
     *::before,
     *::after {
       animation-duration: 0.001ms !important;
+      animation-delay: 0ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.001ms !important;
+      transition-delay: 0ms !important;
       scroll-behavior: auto !important;
     }
   }
@@ -197,4 +199,261 @@
       padding-bottom: 0;
     }
   }
+}
+
+/* ==========================================================================
+   Motion system
+   ==========================================================================
+   Two families of animation live here:
+
+   1. ON-LOAD reveals (`.reveal-on-load`) — pure CSS `@keyframes`, no JS, no
+      IntersectionObserver. For content that is already above the fold the
+      moment the page paints (the hero, page headers, the mobile menu once
+      opened) there is nothing to "scroll into view" — it just needs to
+      stage in on arrival. Because it's a plain CSS animation, it runs even
+      if React never hydrates, and it always ends at full opacity/position,
+      so a JS failure never leaves this content stuck invisible.
+
+   2. SCROLL-triggered reveals — driven by the `useReveal` hook
+      (src/lib/motion/useReveal.ts) via inline styles on Reveal / ImageReveal
+      / ProcessTimeline. Those are intentionally NOT expressed as classes
+      here, because their whole safety property depends on the "visible"
+      state being indistinguishable from plain unstyled content — see the
+      comment on that hook for the full reasoning.
+
+   Both families are already covered by the `prefers-reduced-motion` block at
+   the top of this file, which forces every animation/transition duration to
+   ~0 — so nothing below needs its own reduced-motion branch.
+   ========================================================================== */
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal-on-load {
+  animation: reveal-up 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Nav-link underline: grows from the left on hover/focus/current page. */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.25rem;
+  height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.link-underline:hover::after,
+.link-underline:focus-visible::after,
+.link-underline[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+/* Header: hairline + shadow that appears once the page has scrolled. */
+.site-header {
+  transition: box-shadow 220ms ease, border-color 220ms ease;
+}
+.site-header[data-scrolled="true"] {
+  box-shadow: 0 1px 2px rgb(11 23 16 / 0.04), 0 10px 24px -16px rgb(11 23 16 / 0.22);
+}
+
+/* Mobile menu: links stage in with a short left-to-right stagger, driven by
+   an inline animation-delay per item — see SiteHeader.tsx. Pure CSS, plays
+   the instant the drawer mounts. */
+@keyframes mobile-link-in {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.mobile-link-in {
+  animation: mobile-link-in 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ---------------------------------------------------------------- Process
+   timeline. Default state (below) is the fully-drawn, fully-shown resting
+   look — the same "never invisible by default" contract as everything else.
+   A `data-reveal="pending"` root (added only post-mount, only when the
+   section is confirmed below the fold — see ProcessTimeline.tsx) snaps
+   everything to its hidden starting point with no transition; swapping to
+   `data-reveal="revealed"` is what actually plays the sequence. */
+.process-line {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+.process-line-vertical {
+  transform: scaleY(1);
+  transform-origin: top center;
+}
+.process-step {
+  opacity: 1;
+  transform: translateY(0);
+}
+.process-step-number {
+  color: var(--color-forest-600);
+}
+
+[data-reveal="pending"] .process-line,
+[data-reveal="pending"] .process-line-vertical {
+  transition: none;
+}
+[data-reveal="pending"] .process-line {
+  transform: scaleX(0);
+}
+[data-reveal="pending"] .process-line-vertical {
+  transform: scaleY(0);
+}
+[data-reveal="pending"] .process-step {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: none;
+}
+[data-reveal="pending"] .process-step-number {
+  color: var(--color-sage-300);
+  transition: none;
+}
+
+[data-reveal="revealed"] .process-line {
+  transform: scaleX(1);
+  transition: transform 1050ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-reveal="revealed"] .process-line-vertical {
+  transform: scaleY(1);
+  transition: transform 1050ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-reveal="revealed"] .process-step {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 520ms cubic-bezier(0.22, 1, 0.36, 1), transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-reveal="revealed"] .process-step-number {
+  color: var(--color-forest-600);
+  transition: color 420ms ease;
+}
+[data-reveal="revealed"] .process-step:nth-child(1) { transition-delay: 40ms; }
+[data-reveal="revealed"] .process-step:nth-child(1) .process-step-number { transition-delay: 40ms; }
+[data-reveal="revealed"] .process-step:nth-child(2) { transition-delay: 310ms; }
+[data-reveal="revealed"] .process-step:nth-child(2) .process-step-number { transition-delay: 310ms; }
+[data-reveal="revealed"] .process-step:nth-child(3) { transition-delay: 580ms; }
+[data-reveal="revealed"] .process-step:nth-child(3) .process-step-number { transition-delay: 580ms; }
+[data-reveal="revealed"] .process-step:nth-child(4) { transition-delay: 850ms; }
+[data-reveal="revealed"] .process-step:nth-child(4) .process-step-number { transition-delay: 850ms; }
+
+/* ----------------------------------------------------------- FAQ accordion
+   Height-animates via the grid-template-rows trick (0fr -> 1fr), which
+   animates smoothly to an unknown/variable content height with no JS
+   measurement. The collapsed panel is also marked `inert` in the markup so a
+   phone link inside a closed answer can't be tab-focused while hidden. */
+.faq-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.faq-panel[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+.faq-panel > div {
+  overflow: hidden;
+}
+/* Suppresses the transition for the one render where mounting collapses an
+   accordion that started server-rendered open — see FaqList.tsx. */
+.faq-no-transition .faq-panel {
+  transition: none;
+}
+
+/* Generic horizontal "drawing" accent rule — draws left-to-right in sync
+   with its own Reveal ancestor (which stamps its state as `data-reveal` on
+   itself), rather than needing a separate trigger. Used under the trust-strip
+   proof items, the "why choose us" numbered points and the season card
+   dividers. */
+.reveal-rule-x {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+[data-reveal="pending"] .reveal-rule-x {
+  transform: scaleX(0);
+  transition: none;
+}
+[data-reveal="revealed"] .reveal-rule-x {
+  transform: scaleX(1);
+  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1) 180ms;
+}
+
+/* Vertical counterpart — the divider between the CtaBand's two columns. */
+.reveal-rule-y {
+  transform: scaleY(1);
+  transform-origin: top center;
+}
+[data-reveal="pending"] .reveal-rule-y {
+  transform: scaleY(0);
+  transition: none;
+}
+[data-reveal="revealed"] .reveal-rule-y {
+  transform: scaleY(1);
+  transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1) 220ms;
+}
+
+/* Gallery lightbox entrance. Only the OPEN transition is animated (via
+   @starting-style) — close is left instant, which is the dialog's native
+   behaviour and not a regression. Browsers without @starting-style support
+   simply show the dialog immediately, exactly as before this was added. */
+.gallery-dialog[open] {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  transition: opacity 260ms cubic-bezier(0.22, 1, 0.36, 1), transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.gallery-dialog::backdrop {
+  transition: opacity 260ms ease;
+}
+@starting-style {
+  .gallery-dialog[open] {
+    opacity: 0;
+    transform: scale(0.97) translateY(8px);
+  }
+  .gallery-dialog[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+/* Before/after slider: the full-frame range input's default focus outline is
+   suppressed in favour of a ring drawn around the visual handle via
+   `:has()` (see BeforeAfter.tsx). Browsers without `:has()` support keep a
+   plain outline on the input itself, so focus is never invisible. */
+@supports not selector(:has(a)) {
+  .ba-range:focus-visible {
+    outline: 3px solid #e0a02a;
+    outline-offset: 2px;
+  }
+}
+
+/* One-time instructional pulse on the before/after slider handle, played
+   once when a comparison first enters view — see BeforeAfter.tsx. */
+@keyframes handle-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgb(224 160 42 / 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgb(224 160 42 / 0);
+  }
+}
+.handle-pulse {
+  animation: handle-pulse 1100ms cubic-bezier(0.22, 1, 0.36, 1) 2;
 }

@@ -6,19 +6,21 @@ type Size = "md" | "lg";
 
 const base =
   "inline-flex items-center justify-center gap-2 rounded-xs font-semibold " +
-  "transition-colors duration-150 " +
+  "transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] " +
+  // A restrained 1-2px lift on hover/focus, never on active (pressed sits flush).
+  "hover:-translate-y-px focus-visible:-translate-y-px active:translate-y-0 " +
   // 48px minimum tap target on every variant.
   "min-h-12 text-center";
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-gold-500 text-forest-950 hover:bg-gold-400 active:bg-gold-600 shadow-card",
+    "bg-gold-500 text-forest-950 shadow-card hover:bg-gold-400 hover:shadow-lift focus-visible:bg-gold-400 focus-visible:shadow-lift active:bg-gold-600 active:shadow-card",
   secondary:
-    "bg-forest-600 text-white hover:bg-forest-500 active:bg-forest-700 shadow-card",
+    "bg-forest-600 text-white shadow-card hover:bg-forest-500 hover:shadow-lift focus-visible:bg-forest-500 focus-visible:shadow-lift active:bg-forest-700 active:shadow-card",
   ghost:
-    "border border-forest-600/35 bg-white text-forest-700 hover:border-forest-600 hover:bg-sage-50",
+    "border border-forest-600/35 bg-white text-forest-700 hover:border-forest-600 hover:bg-sage-50 focus-visible:border-forest-600 focus-visible:bg-sage-50",
   onDark:
-    "border border-white/35 bg-white/5 text-white hover:bg-white/15 hover:border-white/60",
+    "border border-white/35 bg-white/5 text-white hover:bg-white/15 hover:border-white/60 focus-visible:bg-white/15 focus-visible:border-white/60",
 };
 
 const sizes: Record<Size, string> = {

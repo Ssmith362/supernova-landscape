@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Service } from "@/content/types";
+import { ImageReveal } from "@/components/motion/ImageReveal";
 
 /**
  * Every card links to its own page. On the old site the three homepage service
@@ -17,16 +18,16 @@ export function ServiceCard({
 }) {
   return (
     <article className="group relative flex flex-col overflow-hidden border border-sage-200 bg-white transition-shadow duration-200 hover:shadow-lift">
-      <div className="relative aspect-4/3 overflow-hidden bg-sage-100">
+      <ImageReveal className="aspect-4/3 bg-sage-100">
         <Image
           src={service.image.src}
           alt={service.image.alt}
           fill
           sizes={sizes}
           priority={priority}
-          className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+          className="object-cover transition-transform duration-500 group-hover:scale-[1.025]"
         />
-      </div>
+      </ImageReveal>
       <div className="flex flex-1 flex-col p-6">
         <h3 className="text-[1.2rem] leading-snug text-ink">
           <Link
@@ -41,7 +42,13 @@ export function ServiceCard({
         </p>
         <span className="mt-5 inline-flex items-center gap-1.5 text-[0.85rem] font-bold uppercase tracking-[0.08em] text-forest-700 transition-colors group-hover:text-forest-500">
           Learn more
-          <svg width="14" height="10" viewBox="0 0 14 10" aria-hidden="true">
+          <svg
+            width="14"
+            height="10"
+            viewBox="0 0 14 10"
+            aria-hidden="true"
+            className="transition-transform duration-200 group-hover:translate-x-1"
+          >
             <path
               d="M8.6 1L12.5 5M12.5 5L8.6 9M12.5 5H1"
               fill="none"

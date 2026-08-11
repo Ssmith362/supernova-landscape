@@ -14,6 +14,7 @@ export function SiteHeader() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [scrolled, setScrolled] = useState(false);
   const navRef = useRef<HTMLElement>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -33,6 +34,24 @@ export function SiteHeader() {
       document.body.style.overflow = "";
     };
   }, [mobileOpen]);
+
+  // A hairline + shadow once the page has scrolled — rAF-batched so the
+  // scroll handler itself never does more than one boolean check per frame,
+  // regardless of how many scroll events fire in between.
+  useEffect(() => {
+    let ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 8);
+        ticking = false;
+      });
+    }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // Escape closes whichever layer is open; clicks outside close the dropdown.
   useEffect(() => {
@@ -66,7 +85,10 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-sage-200/70 bg-bone/95 backdrop-blur supports-[backdrop-filter]:bg-bone/85">
+    <header
+      data-scrolled={scrolled}
+      className="site-header sticky top-0 z-50 border-b border-sage-200/70 bg-bone/95 backdrop-blur supports-[backdrop-filter]:bg-bone/85"
+    >
       {/* Utility strip — desktop only, keeps the main bar uncluttered. */}
       <div className="hidden border-b border-sage-200/60 bg-forest-900 text-white lg:block">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-8 py-1.5 text-[0.78rem]">
@@ -126,7 +148,7 @@ export function SiteHeader() {
                   key={item.href}
                   href={item.href}
                   aria-current={active ? "page" : undefined}
-                  className={`rounded-xs px-3 py-2 text-[0.9rem] font-semibold transition-colors ${
+                  className={`link-underline rounded-xs px-3 py-2 text-[0.9rem] font-semibold transition-colors ${
                     active
                       ? "text-forest-700"
                       : "text-ink-soft hover:text-forest-700"
@@ -150,7 +172,7 @@ export function SiteHeader() {
                   aria-expanded={expanded}
                   aria-controls={`menu-${item.label.replace(/\s+/g, "-")}`}
                   onClick={() => setOpenMenu(expanded ? null : item.label)}
-                  className={`flex items-center gap-1.5 rounded-xs px-3 py-2 text-[0.9rem] font-semibold transition-colors ${
+                  className={`link-underline flex items-center gap-1.5 rounded-xs px-3 py-2 text-[0.9rem] font-semibold transition-colors ${
                     active || expanded
                       ? "text-forest-700"
                       : "text-ink-soft hover:text-forest-700"
@@ -252,12 +274,16 @@ export function SiteHeader() {
       {mobileOpen && (
         <div
           id="mobile-nav"
-          className="fixed inset-x-0 bottom-0 top-[4.25rem] z-40 overflow-y-auto overscroll-contain border-t border-sage-200 bg-bone sm:top-[4.5rem] lg:hidden"
+          className="reveal-on-load fixed inset-x-0 bottom-0 top-[4.25rem] z-40 overflow-y-auto overscroll-contain border-t border-sage-200 bg-bone sm:top-[4.5rem] lg:hidden"
         >
           <nav aria-label="Mobile" className="px-5 pb-40 pt-4">
             <ul className="divide-y divide-sage-200/70">
-              {primaryNav.map((item) => (
-                <li key={item.href} className="py-1">
+              {primaryNav.map((item, i) => (
+                <li
+                  key={item.href}
+                  className="mobile-link-in py-1"
+                  style={{ animationDelay: `${Math.min(i, 6) * 45}ms` }}
+                >
                   {item.children ? (
                     <details className="group">
                       <summary className="flex cursor-pointer list-none items-center justify-between py-3 text-lg font-semibold text-ink [&::-webkit-details-marker]:hidden">
@@ -313,7 +339,10 @@ export function SiteHeader() {
               ))}
             </ul>
 
-            <div className="mt-6 space-y-3 border-t border-sage-200 pt-6">
+            <div
+              className="mobile-link-in mt-6 space-y-3 border-t border-sage-200 pt-6"
+              style={{ animationDelay: "330ms" }}
+            >
               <a
                 href={clientPortalUrl}
                 target="_blank"

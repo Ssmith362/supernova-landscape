@@ -15,6 +15,11 @@ import { RatingBadge } from "@/components/RatingBadge";
 import { ReviewCard } from "@/components/ReviewCard";
 import { ServiceCard } from "@/components/ServiceCard";
 import { Stars } from "@/components/Stars";
+import { HeroBackground } from "@/components/motion/HeroBackground";
+import { ImageReveal } from "@/components/motion/ImageReveal";
+import { ProcessTimeline } from "@/components/motion/ProcessTimeline";
+import { Reveal } from "@/components/motion/Reveal";
+import { StaggerGroup } from "@/components/motion/StaggerGroup";
 
 import { business, reputation } from "@/config/site";
 import { services } from "@/content/services";
@@ -36,6 +41,16 @@ const heroPoints = [
   "Free estimates and consultations",
   "Weekly mowing routes — never bi-weekly",
   "Landscape installs, irrigation and snow",
+];
+
+const trustItems = [
+  {
+    k: `${reputation.rating} ★`,
+    v: `Average across ${reputation.reviewCount} Google reviews`,
+  },
+  { k: "Free", v: "Estimates and on-site consultations" },
+  { k: "Weekly", v: "Mowing routes — we do not run bi-weekly" },
+  { k: "Year-round", v: "Mowing through summer, plowing through winter" },
 ];
 
 const whyPoints = [
@@ -151,15 +166,9 @@ export default function HomePage() {
 
       {/* ---------------------------------------------------------------- HERO */}
       <section className="relative isolate overflow-hidden bg-forest-950">
-        <Image
+        <HeroBackground
           src="/images/heroes/home.jpg"
           alt="A large lawn maintained by Supernova Landscape, freshly cut with even mowing stripes, beside a white fence and a red barn"
-          fill
-          priority
-          fetchPriority="high"
-          quality={65}
-          sizes="100vw"
-          className="object-cover object-center opacity-55"
         />
         <div
           aria-hidden="true"
@@ -172,22 +181,31 @@ export default function HomePage() {
 
         <Container className="relative py-16 sm:py-24 lg:py-28">
           <div className="max-w-2xl">
-            <p className="eyebrow eyebrow-light">
+            <p className="reveal-on-load eyebrow eyebrow-light">
               Spokane · Spokane Valley · Liberty Lake
             </p>
 
-            <h1 className="mt-4 text-[2.3rem] leading-[1.06] text-white sm:text-[3.1rem] lg:text-[3.5rem]">
+            <h1
+              className="reveal-on-load mt-4 text-[2.3rem] leading-[1.06] text-white sm:text-[3.1rem] lg:text-[3.5rem]"
+              style={{ animationDelay: "80ms" }}
+            >
               Landscaping, lawn care and snow removal, done properly.
             </h1>
 
-            <p className="mt-5 max-w-xl text-[1.08rem] leading-relaxed text-sage-100 sm:text-[1.15rem]">
+            <p
+              className="reveal-on-load mt-5 max-w-xl text-[1.08rem] leading-relaxed text-sage-100 sm:text-[1.15rem]"
+              style={{ animationDelay: "160ms" }}
+            >
               Supernova Landscape is a family-owned Spokane crew handling weekly
               mowing, irrigation, landscape installs, seasonal clean-ups and
               snow — for homes and businesses across the greater Spokane area.
             </p>
 
             {/* The trust signal, above the fold, on the first screen. */}
-            <div className="mt-7 inline-flex flex-wrap items-center gap-x-3 gap-y-1.5 border border-white/20 bg-forest-950/45 px-4 py-3 backdrop-blur-sm">
+            <div
+              className="reveal-on-load mt-7 inline-flex flex-wrap items-center gap-x-3 gap-y-1.5 border border-white/20 bg-forest-950/45 px-4 py-3 backdrop-blur-sm"
+              style={{ animationDelay: "240ms" }}
+            >
               <Stars rating={reputation.rating} size={19} />
               <span className="text-[1.05rem] font-bold text-white">
                 {reputation.rating.toFixed(1)}
@@ -206,13 +224,16 @@ export default function HomePage() {
               </a>
             </div>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div
+              className="reveal-on-load mt-8 flex flex-col gap-3 sm:flex-row"
+              style={{ animationDelay: "320ms" }}
+            >
               <QuoteCta location="hero" size="lg">
                 Get a Free Quote
               </QuoteCta>
               <PhoneLink
                 location="hero"
-                className="inline-flex min-h-14 items-center justify-center gap-2.5 rounded-xs border border-white/40 px-7 text-[1.05rem] font-bold text-white transition-colors hover:border-white hover:bg-white/10"
+                className="inline-flex min-h-14 items-center justify-center gap-2.5 rounded-xs border border-white/40 px-7 text-[1.05rem] font-bold text-white transition-[color,background-color,border-color,transform] duration-150 hover:-translate-y-px hover:border-white hover:bg-white/10 focus-visible:-translate-y-px focus-visible:border-white focus-visible:bg-white/10 active:translate-y-0"
               >
                 <svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true">
                   <path
@@ -224,7 +245,10 @@ export default function HomePage() {
               </PhoneLink>
             </div>
 
-            <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2">
+            <ul
+              className="reveal-on-load mt-8 flex flex-wrap gap-x-6 gap-y-2"
+              style={{ animationDelay: "400ms" }}
+            >
               {heroPoints.map((p) => (
                 <li
                   key={p}
@@ -257,26 +281,25 @@ export default function HomePage() {
       {/* -------------------------------------------------------- TRUST STRIP */}
       <section className="border-b border-sage-200 bg-white">
         <Container>
-          <dl className="grid divide-sage-200 sm:grid-cols-2 sm:divide-x lg:grid-cols-4">
-            {[
-              {
-                k: `${reputation.rating} ★`,
-                v: `Average across ${reputation.reviewCount} Google reviews`,
-              },
-              { k: "Free", v: "Estimates and on-site consultations" },
-              { k: "Weekly", v: "Mowing routes — we do not run bi-weekly" },
-              { k: "Year-round", v: "Mowing through summer, plowing through winter" },
-            ].map((item) => (
-              <div key={item.k} className="px-2 py-7 sm:px-6">
+          <StaggerGroup
+            as="dl"
+            itemAs="div"
+            className="grid divide-sage-200 sm:grid-cols-2 sm:divide-x lg:grid-cols-4"
+            itemClassName="px-2 py-7 sm:px-6"
+            stagger={80}
+          >
+            {trustItems.map((item) => (
+              <div key={item.k}>
                 <dt className="font-display text-[1.6rem] font-semibold leading-none text-forest-700">
                   {item.k}
                 </dt>
                 <dd className="mt-2 text-[0.9rem] leading-snug text-ink-soft">
                   {item.v}
                 </dd>
+                <span aria-hidden="true" className="reveal-rule-x mt-4 block h-px w-8 bg-gold-500" />
               </div>
             ))}
-          </dl>
+          </StaggerGroup>
         </Container>
       </section>
 
@@ -284,60 +307,83 @@ export default function HomePage() {
       <section className="py-20 sm:py-24">
         <Container>
           <div className="flex flex-wrap items-end justify-between gap-6">
-            <SectionHeading
-              eyebrow="What we do"
-              title="Nine services, nine places to start"
-              lede="Everything below has its own page with real detail — what is included, what it costs you to skip it, and when in a Spokane year it should happen."
-            />
-            <ButtonLink href="/services" variant="ghost">
-              All services
-            </ButtonLink>
+            <Reveal>
+              <SectionHeading
+                eyebrow="What we do"
+                title="Nine services, nine places to start"
+                lede="Everything below has its own page with real detail — what is included, what it costs you to skip it, and when in a Spokane year it should happen."
+              />
+            </Reveal>
+            <Reveal delay={80}>
+              <ButtonLink href="/services" variant="ghost">
+                All services
+              </ButtonLink>
+            </Reveal>
           </div>
 
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <StaggerGroup
+            as="div"
+            itemAs="div"
+            className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            stagger={80}
+            cap={3}
+          >
             {featured.map((s, i) => (
               <ServiceCard key={s.slug} service={s} priority={i < 3} />
             ))}
-          </div>
+          </StaggerGroup>
 
-          <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <StaggerGroup
+            as="ul"
+            itemAs="li"
+            className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
+            stagger={60}
+            cap={6}
+            baseDelay={120}
+          >
             {rest.map((s) => (
-              <li key={s.slug}>
-                <Link
-                  href={`/services/${s.slug}`}
-                  className="group flex h-full items-start justify-between gap-4 border border-sage-200 bg-white p-5 transition-colors hover:border-forest-600"
+              <Link
+                key={s.slug}
+                href={`/services/${s.slug}`}
+                className="group flex h-full items-start justify-between gap-4 border border-sage-200 bg-white p-5 transition-colors hover:border-forest-600"
+              >
+                <span>
+                  <span className="block font-display text-[1.05rem] font-semibold text-ink">
+                    {s.name}
+                  </span>
+                  <span className="mt-1 block text-[0.86rem] leading-snug text-ink-muted">
+                    {s.summary}
+                  </span>
+                </span>
+                <span
+                  aria-hidden="true"
+                  className="mt-1 shrink-0 text-forest-600 transition-transform group-hover:translate-x-1"
                 >
-                  <span>
-                    <span className="block font-display text-[1.05rem] font-semibold text-ink">
-                      {s.name}
-                    </span>
-                    <span className="mt-1 block text-[0.86rem] leading-snug text-ink-muted">
-                      {s.summary}
-                    </span>
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    className="mt-1 shrink-0 text-forest-600 transition-transform group-hover:translate-x-1"
-                  >
-                    →
-                  </span>
-                </Link>
-              </li>
+                  →
+                </span>
+              </Link>
             ))}
-          </ul>
+          </StaggerGroup>
         </Container>
       </section>
 
       {/* ------------------------------------------------------ BEFORE / AFTER */}
       <section className="bg-sage-50 py-20 sm:py-24">
         <Container>
-          <SectionHeading
-            eyebrow="Real Spokane jobs"
-            title="Drag the handle. These are our yards."
-            lede="Every photograph on this site is Supernova's own work — no stock imagery. Most of these started as yards nobody had touched in years."
-          />
+          <Reveal>
+            <SectionHeading
+              eyebrow="Real Spokane jobs"
+              title="Drag the handle. These are our yards."
+              lede="Every photograph on this site is Supernova's own work — no stock imagery. Most of these started as yards nobody had touched in years."
+            />
+          </Reveal>
 
-          <div className="mt-12 grid gap-8 md:grid-cols-2">
+          <StaggerGroup
+            as="div"
+            itemAs="div"
+            className="mt-12 grid gap-8 md:grid-cols-2"
+            stagger={100}
+          >
             {beforeAfters.map((p) => (
               <BeforeAfter
                 key={p.slug}
@@ -346,10 +392,14 @@ export default function HomePage() {
                 label={p.title}
               />
             ))}
-          </div>
+          </StaggerGroup>
 
-          <div className="mt-10 grid items-center gap-8 border border-sage-200 bg-white p-6 sm:p-8 lg:grid-cols-[1fr_1.1fr]">
-            <div className="relative aspect-4/3 overflow-hidden bg-sage-100">
+          <Reveal
+            as="div"
+            delay={140}
+            className="mt-10 grid items-center gap-8 border border-sage-200 bg-white p-6 sm:p-8 lg:grid-cols-[1fr_1.1fr]"
+          >
+            <ImageReveal className="aspect-4/3 bg-sage-100">
               <Image
                 src={showcase.after.src}
                 alt={showcase.after.alt}
@@ -358,7 +408,7 @@ export default function HomePage() {
                 loading="lazy"
                 className="object-cover"
               />
-            </div>
+            </ImageReveal>
             <div>
               <p className="eyebrow">From the gallery</p>
               <h3 className="mt-3 text-[1.55rem] leading-tight text-ink">
@@ -379,20 +429,32 @@ export default function HomePage() {
                 </ButtonLink>
               </div>
             </div>
-          </div>
+          </Reveal>
         </Container>
       </section>
 
       {/* ----------------------------------------------------------------- WHY */}
       <section className="py-20 sm:py-24">
         <Container>
-          <SectionHeading
-            eyebrow="Why homeowners pick us"
-            title="Four things worth knowing before you call anyone"
-          />
-          <div className="mt-12 grid gap-x-10 gap-y-9 sm:grid-cols-2">
+          <Reveal>
+            <SectionHeading
+              eyebrow="Why homeowners pick us"
+              title="Four things worth knowing before you call anyone"
+            />
+          </Reveal>
+          <StaggerGroup
+            as="div"
+            itemAs="div"
+            className="mt-12 grid gap-x-10 gap-y-9 sm:grid-cols-2"
+            stagger={90}
+            baseDelay={100}
+          >
             {whyPoints.map((p, i) => (
-              <div key={p.title} className="border-t-2 border-forest-600 pt-5">
+              <div key={p.title} className="relative pt-5">
+                <span
+                  aria-hidden="true"
+                  className="reveal-rule-x absolute inset-x-0 top-0 h-0.5 bg-forest-600"
+                />
                 <span className="font-display text-[0.9rem] font-bold text-forest-600">
                   0{i + 1}
                 </span>
@@ -404,25 +466,32 @@ export default function HomePage() {
                 </p>
               </div>
             ))}
-          </div>
+          </StaggerGroup>
         </Container>
       </section>
 
       {/* -------------------------------------------------------------- SEASON */}
       <section className="bg-forest-950 py-20 text-white sm:py-24">
         <Container>
-          <SectionHeading
-            tone="dark"
-            eyebrow="A Spokane year"
-            title="What we are doing, and when"
-            lede="Landscaping here is seasonal work with narrow windows. Miss the overseeding window or the blow-out window and it costs you — either a thin lawn next spring or a split irrigation line."
-          />
+          <Reveal>
+            <SectionHeading
+              tone="dark"
+              eyebrow="A Spokane year"
+              title="What we are doing, and when"
+              lede="Landscaping here is seasonal work with narrow windows. Miss the overseeding window or the blow-out window and it costs you — either a thin lawn next spring or a split irrigation line."
+            />
+          </Reveal>
 
-          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <StaggerGroup
+            as="div"
+            itemAs="div"
+            className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+            stagger={90}
+          >
             {seasons.map((s) => (
               <div
                 key={s.season}
-                className="flex h-full flex-col border border-white/15 bg-white/[0.04] p-6"
+                className="flex h-full flex-col border border-white/15 bg-white/[0.04] p-6 transition-colors duration-300 hover:bg-white/[0.07] focus-within:bg-white/[0.07]"
               >
                 <h3 className="text-[1.3rem] text-white">{s.season}</h3>
                 <p className="mt-1 text-[0.78rem] font-bold uppercase tracking-[0.12em] text-gold-400">
@@ -439,14 +508,18 @@ export default function HomePage() {
                     </li>
                   ))}
                 </ul>
-                <div className="mt-5 flex flex-wrap gap-x-3 gap-y-1 border-t border-white/12 pt-4">
+                <div className="relative mt-5 flex flex-wrap gap-x-3 gap-y-1 pt-4">
+                  <span
+                    aria-hidden="true"
+                    className="reveal-rule-x absolute inset-x-0 top-0 h-px bg-white/12"
+                  />
                   {s.slugs.map((slug) => {
                     const svc = services.find((x) => x.slug === slug)!;
                     return (
                       <Link
                         key={slug}
                         href={`/services/${slug}`}
-                        className="text-[0.8rem] font-semibold text-gold-400 underline-offset-4 hover:underline"
+                        className="text-[0.8rem] font-semibold text-gold-400 underline-offset-4 transition-colors duration-150 hover:text-gold-200 hover:underline focus-visible:text-gold-200 focus-visible:underline"
                       >
                         {svc.name}
                       </Link>
@@ -455,7 +528,7 @@ export default function HomePage() {
                 </div>
               </div>
             ))}
-          </div>
+          </StaggerGroup>
         </Container>
       </section>
 
@@ -463,93 +536,99 @@ export default function HomePage() {
       <section className="py-20 sm:py-24">
         <Container>
           <div className="flex flex-wrap items-end justify-between gap-6">
-            <SectionHeading
-              eyebrow="What people say"
-              title={`${reputation.rating} stars, ${reputation.reviewCount} reviews`}
-              lede="Real reviews from Google, Nextdoor and customers who wrote to us directly. Nothing here is written by us."
-            />
-            <div className="flex flex-col items-start gap-3">
+            <Reveal>
+              <SectionHeading
+                eyebrow="What people say"
+                title={`${reputation.rating} stars, ${reputation.reviewCount} reviews`}
+                lede="Real reviews from Google, Nextdoor and customers who wrote to us directly. Nothing here is written by us."
+              />
+            </Reveal>
+            <Reveal delay={80} className="flex flex-col items-start gap-3">
               <RatingBadge showLink={false} />
               <ButtonLink href="/reviews" variant="ghost">
                 All reviews
               </ButtonLink>
-            </div>
+            </Reveal>
           </div>
 
-          <ul className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <StaggerGroup
+            as="ul"
+            itemAs="li"
+            className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3"
+            stagger={70}
+            baseDelay={100}
+          >
             {reviews.map((r) => (
-              <li key={r.author}>
-                <ReviewCard review={r} />
-              </li>
+              <ReviewCard key={r.author} review={r} />
             ))}
-          </ul>
+          </StaggerGroup>
         </Container>
       </section>
 
       {/* -------------------------------------------------------- SERVICE AREA */}
       <section className="bg-sage-50 py-20 sm:py-24">
         <Container>
-          <SectionHeading
-            eyebrow="Where we work"
-            title="Greater Spokane, Spokane Valley and Liberty Lake"
-            lede="Three areas, three genuinely different sets of conditions — old trees and steep lots in the city, big irrigated lawns in the Valley, HOA frontage standards in Liberty Lake."
-          />
+          <Reveal>
+            <SectionHeading
+              eyebrow="Where we work"
+              title="Greater Spokane, Spokane Valley and Liberty Lake"
+              lede="Three areas, three genuinely different sets of conditions — old trees and steep lots in the city, big irrigated lawns in the Valley, HOA frontage standards in Liberty Lake."
+            />
+          </Reveal>
 
-          <ul className="mt-12 grid gap-6 md:grid-cols-3">
+          <StaggerGroup
+            as="ul"
+            itemAs="li"
+            className="mt-12 grid gap-6 md:grid-cols-3"
+            stagger={90}
+          >
             {locations.map((loc) => (
-              <li key={loc.slug}>
-                <Link
-                  href={`/service-areas/${loc.slug}`}
-                  className="group flex h-full flex-col overflow-hidden border border-sage-200 bg-white transition-shadow hover:shadow-lift"
-                >
-                  <div className="relative aspect-16/10 overflow-hidden bg-sage-100">
-                    <Image
-                      src={loc.image.src}
-                      alt={loc.image.alt}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                      loading="lazy"
-                      className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                    />
-                  </div>
-                  <div className="flex flex-1 flex-col p-6">
-                    <h3 className="text-[1.25rem] text-ink">{loc.cityState}</h3>
-                    <p className="mt-2 flex-1 text-[0.92rem] leading-relaxed text-ink-soft">
-                      {loc.localNotes[0].heading}.
-                    </p>
-                    <span className="mt-4 text-[0.85rem] font-bold uppercase tracking-[0.08em] text-forest-700 group-hover:text-forest-500">
-                      What we do here →
+              <Link
+                key={loc.slug}
+                href={`/service-areas/${loc.slug}`}
+                className="group flex h-full flex-col overflow-hidden border border-sage-200 bg-white transition-shadow hover:shadow-lift focus-visible:shadow-lift"
+              >
+                <ImageReveal className="aspect-16/10 bg-sage-100">
+                  <Image
+                    src={loc.image.src}
+                    alt={loc.image.alt}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    loading="lazy"
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.025] group-focus-visible:scale-[1.025]"
+                  />
+                </ImageReveal>
+                <div className="flex flex-1 flex-col p-6">
+                  <h3 className="text-[1.25rem] text-ink">{loc.cityState}</h3>
+                  <p className="mt-2 flex-1 text-[0.92rem] leading-relaxed text-ink-soft">
+                    {loc.localNotes[0].heading}.
+                  </p>
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-[0.85rem] font-bold uppercase tracking-[0.08em] text-forest-700 transition-colors group-hover:text-forest-500 group-focus-visible:text-forest-500">
+                    What we do here
+                    <span
+                      aria-hidden="true"
+                      className="transition-transform duration-200 group-hover:translate-x-1 group-focus-visible:translate-x-1"
+                    >
+                      →
                     </span>
-                  </div>
-                </Link>
-              </li>
+                  </span>
+                </div>
+              </Link>
             ))}
-          </ul>
+          </StaggerGroup>
         </Container>
       </section>
 
       {/* ------------------------------------------------------------- PROCESS */}
       <section className="py-20 sm:py-24">
         <Container>
-          <SectionHeading
-            eyebrow="What happens next"
-            title="From your call to work on the ground"
-          />
-          <ol className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {processSteps.map((step) => (
-              <li key={step.n}>
-                <span className="font-display text-[2.4rem] font-semibold leading-none text-sage-300">
-                  {step.n}
-                </span>
-                <h3 className="mt-3 text-[1.15rem] leading-snug text-ink">
-                  {step.title}
-                </h3>
-                <p className="mt-2 text-[0.94rem] leading-relaxed text-ink-soft">
-                  {step.body}
-                </p>
-              </li>
-            ))}
-          </ol>
+          <Reveal>
+            <SectionHeading
+              eyebrow="What happens next"
+              title="From your call to work on the ground"
+            />
+          </Reveal>
+          <ProcessTimeline steps={processSteps} />
         </Container>
       </section>
 
