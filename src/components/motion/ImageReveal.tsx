@@ -3,26 +3,31 @@
 import type { ReactNode } from "react";
 import { useReveal } from "@/lib/motion/useReveal";
 
-const CLIP_HIDDEN = {
-  up: "inset(0 0 100% 0)",
-  left: "inset(0 100% 0 0)",
-  right: "inset(0 0 0 100%)",
+const OFFSET = {
+  up: "translateY(14px) scale(1.04)",
+  left: "translateX(-14px) scale(1.04)",
+  right: "translateX(14px) scale(1.04)",
 } as const;
 
 /**
- * Directional clip-path mask reveal for imagery — the "restrained
- * directional mask" used on service cards, location cards and the gallery.
+ * Image entrance — a small settle-in fade, slide and scale, played the first
+ * time the frame scrolls into view.
  *
- * Two layers, deliberately: this outer element owns the fixed frame (sizing,
- * `overflow-hidden`, the animated `clip-path`), and an inner layer owns a
- * small settle-in scale. Scaling the outer frame itself would grow the
- * card's footprint on screen; scaling only the inner layer keeps the frame
- * static and lets the image breathe within it.
+ * This used to be a `clip-path` mask (an animated crop that swept open), but
+ * that combination — an animated `clip-path` on an `overflow-hidden` frame,
+ * driven by state a scroll observer sets — turned out to be the wrong choice
+ * for something this load-bearing: on the live site a batch of images got
+ * stuck in their fully-clipped starting state and simply never appeared. This
+ * component now uses the exact opacity/transform pattern `Reveal` uses, which
+ * has been verified directly (DOM event testing, not just code review) to
+ * settle correctly. If the reveal state machine ever fails to fire — an
+ * unproven edge case worth guarding regardless — an image at worst renders
+ * slightly faded and offset rather than invisible; a `clip-path` stuck at its
+ * starting value renders nothing at all. See `useReveal`'s own timeout
+ * safety-net for the same reasoning at the source.
  *
  * `children` is whatever fills the frame — typically a `next/image` with
- * `fill`, which already renders as `position:absolute; inset:0`, so it drops
- * straight into the inner layer without extra wrapping markup on the caller's
- * side.
+ * `fill`, which already renders as `position:absolute; inset:0`.
  */
 export function ImageReveal({
   children,
@@ -32,30 +37,22 @@ export function ImageReveal({
 }: {
   children: ReactNode;
   className?: string;
-  direction?: keyof typeof CLIP_HIDDEN;
+  direction?: keyof typeof OFFSET;
   delay?: number;
 }) {
   const { ref, state } = useReveal<HTMLDivElement>();
   const pending = state === "pending";
 
   return (
-    <div
-      ref={ref}
-      className={`relative overflow-hidden ${className}`}
-      style={{
-        clipPath: pending ? CLIP_HIDDEN[direction] : "inset(0 0 0 0)",
-        transition: pending
-          ? "none"
-          : `clip-path 680ms cubic-bezier(0.22,1,0.36,1) ${delay}ms`,
-      }}
-    >
+    <div ref={ref} className={`relative overflow-hidden ${className}`}>
       <div
         className="absolute inset-0"
         style={{
-          transform: pending ? "scale(1.08)" : "scale(1)",
+          opacity: pending ? 0 : 1,
+          transform: pending ? OFFSET[direction] : "translate(0, 0) scale(1)",
           transition: pending
             ? "none"
-            : `transform 780ms cubic-bezier(0.22,1,0.36,1) ${delay}ms`,
+            : `opacity 620ms cubic-bezier(0.22,1,0.36,1) ${delay}ms, transform 680ms cubic-bezier(0.22,1,0.36,1) ${delay}ms`,
         }}
       >
         {children}

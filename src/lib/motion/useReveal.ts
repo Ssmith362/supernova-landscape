@@ -62,13 +62,25 @@ export function useReveal<T extends HTMLElement>(options?: {
     }
 
     setState("pending");
-    return observeOnce(
+    const stopObserving = observeOnce(
       el,
       () => setState("revealed"),
       threshold !== undefined || rootMargin !== undefined
         ? { threshold: threshold ?? 0.15, rootMargin: rootMargin ?? "0px 0px -10% 0px" }
         : undefined,
     );
+
+    // Safety net: if the observer never fires — a stale ad blocker, a
+    // browser quirk, anything — content must not stay hidden forever.
+    // Below-the-fold content the user hasn't reached yet still gets a
+    // real reveal via the observer well before this fires; this only
+    // catches the case where that never happens.
+    const fallback = window.setTimeout(() => setState("revealed"), 2500);
+
+    return () => {
+      stopObserving();
+      window.clearTimeout(fallback);
+    };
   }, [threshold, rootMargin]);
 
   return { ref, state };
