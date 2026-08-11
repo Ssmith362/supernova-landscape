@@ -12,13 +12,13 @@ import { JsonLd } from "@/components/JsonLd";
 import { PhoneLink } from "@/components/PhoneLink";
 import { QuoteCta } from "@/components/QuoteCta";
 import { RatingBadge } from "@/components/RatingBadge";
-import { ReviewCard } from "@/components/ReviewCard";
 import { ServiceCard } from "@/components/ServiceCard";
 import { Stars } from "@/components/Stars";
 import { HeroBackground } from "@/components/motion/HeroBackground";
 import { ImageReveal } from "@/components/motion/ImageReveal";
 import { ProcessTimeline } from "@/components/motion/ProcessTimeline";
 import { Reveal } from "@/components/motion/Reveal";
+import { ReviewDeck } from "@/components/motion/ReviewDeck";
 import { StaggerGroup } from "@/components/motion/StaggerGroup";
 
 import { business, reputation } from "@/config/site";
@@ -551,17 +551,7 @@ export default function HomePage() {
             </Reveal>
           </div>
 
-          <StaggerGroup
-            as="ul"
-            itemAs="li"
-            className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3"
-            stagger={70}
-            baseDelay={100}
-          >
-            {reviews.map((r) => (
-              <ReviewCard key={r.author} review={r} />
-            ))}
-          </StaggerGroup>
+          <ReviewDeck reviews={reviews} />
         </Container>
       </section>
 
