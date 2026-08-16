@@ -14,7 +14,7 @@
     "typecheck": "tsc --noEmit",
     "audit:site": "node scripts/audit-site.mjs"
   },
-  "//dependencies": "Anything needed to BUILD or RUN in production lives here, not in devDependencies. Managed Node hosts (Hostinger included) commonly set NODE_ENV=production before installing, which makes npm skip devDependencies entirely — so a build-time package parked in devDependencies fails the deploy with a missing-module error. sharp is here because Next uses it for runtime image optimisation; without it Next silently serves unoptimised originals with nothing in the logs.",
+  "//dependencies": "Anything needed to BUILD or RUN in production lives here. This arrangement dates from a host that set NODE_ENV=production before installing, which made npm skip devDependencies entirely and broke the build. Vercel installs both, so it is no longer strictly required — but sharp genuinely belongs here regardless: Next uses it for runtime image optimisation, and if it is missing Next silently serves unoptimised originals with nothing in the logs.",
   "dependencies": {
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^24.10.1",

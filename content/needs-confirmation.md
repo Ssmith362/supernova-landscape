@@ -210,7 +210,7 @@ request was delivered.
 1. A sending provider (Resend, Postmark or SendGrid — or Damien's CoPilot CRM
    if it accepts an inbound webhook)
 2. A verified sender domain, so requests do not land in spam
-3. The environment variables in `.env.example` set in Hostinger
+3. The environment variables in `.env.example` set in Vercel
 4. One live test submission, confirmed received
 
 See "Connecting the quote form" in `README.md`.

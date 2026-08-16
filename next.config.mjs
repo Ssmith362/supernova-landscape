@@ -1,26 +1,19 @@
 /**
- * Plain .mjs, deliberately — NOT next.config.ts.
+ * Plain .mjs rather than next.config.ts.
  *
- * Next has to transpile a TypeScript config with SWC before it can read it.
- * On Hostinger's build image the native SWC binary will not load, Next falls
- * back to the WASM build, and that fallback fails to resolve the compiled
- * config, killing the build before it starts:
+ * This started as a hard requirement of the previous host, whose build image
+ * could not load the native SWC binary needed to transpile a TypeScript
+ * config. That no longer applies on Vercel, where either format works — the
+ * file stays .mjs because it works and churning it buys nothing. The JSDoc
+ * type annotation keeps editor autocomplete and type checking regardless.
  *
- *   Failed to load next.config.ts
- *   Cannot find module '.../<hash>.next.config'
- *
- * A .mjs config is read directly with no compile step, so it cannot fail that
- * way. The JSDoc type annotation keeps editor autocomplete and type checking.
- *
- * Output is the standard Next server, started with `next start`. Deliberately
- * NOT `output: "standalone"` — standalone is built for copy-the-bundle
- * (Docker) deployments and on this stack it does not copy `public/` or
- * `.next/static/`, and its dependency tracing does not reliably carry sharp's
- * native binaries. When sharp fails to load, Next silently serves the
- * unoptimised original: a 990 KB hero instead of 62 KB, with nothing in the
- * logs. Hostinger installs and builds in the repo itself, so the full
- * node_modules is present and plain `next start` is simpler and more reliable.
- * Nothing here is Vercel-specific.
+ * NO `output` KEY, deliberately. Vercel's Next.js preset handles the build
+ * output itself, and setting `output: "standalone"` here would opt out of that
+ * in favour of a copy-the-bundle layout meant for Docker — which does not copy
+ * `public/` or `.next/static/`, and whose dependency tracing does not reliably
+ * carry sharp's native binaries. A sharp that fails to load is silent: Next
+ * just serves the unoptimised original, a 990 KB hero instead of 62 KB, with
+ * nothing in the logs. Leave this key absent.
  *
  * @type {import("next").NextConfig}
  */

@@ -9,9 +9,10 @@ import type { QuoteFields } from "./schema";
  * the form tells the user plainly to call or email instead.
  *
  * TO CONNECT IT (see README "Connecting the quote form"):
- *   1. Choose a provider. Resend, Postmark and SendGrid all work on Hostinger;
- *      so does Damien's CoPilot CRM if it exposes an inbound webhook.
- *   2. Set the environment variables in Hostinger (never commit them):
+ *   1. Choose a provider. Resend, Postmark and SendGrid are all plain HTTPS
+ *      APIs and work anywhere; so does Damien's CoPilot CRM if it exposes an
+ *      inbound webhook.
+ *   2. Set the environment variables in Vercel (never commit them):
  *        QUOTE_DELIVERY_PROVIDER=resend
  *        QUOTE_DELIVERY_API_KEY=...
  *        QUOTE_NOTIFY_EMAIL=Damien@supernovalandscape.com

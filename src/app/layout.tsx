@@ -13,7 +13,7 @@ import { graph, organizationSchema, websiteSchema } from "@/lib/schema";
 /**
  * Fonts are self-hosted variable WOFF2 (latin subset) rather than fetched from
  * Google at build time, so a build never depends on outbound network access —
- * which matters on Hostinger's build step.
+ * so a build never depends on outbound network access.
  */
 const fraunces = localFont({
   src: "../fonts/Fraunces-latin.woff2",

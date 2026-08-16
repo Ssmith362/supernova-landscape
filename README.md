@@ -2,32 +2,32 @@
 
 Production website for **Supernova Landscape Company LLC**, Spokane WA.
 
-Next.js 15.5 · App Router · TypeScript · Tailwind CSS 4 · deployed to Hostinger
-Node.js Web Apps.
+Next.js 15.5 · App Router · TypeScript · Tailwind CSS 4 · deployed to Vercel.
 
-> ### ⚠️ Do not upgrade to Next.js 16
+> ### Note on the Next.js version
 >
-> Hostinger's build image ships **glibc 2.28**. Next 16's native SWC binary
-> requires **glibc 2.30**, so `next build` fails there with
-> `GLIBC_2.29 not found`, falls back to the WASM compiler, and then dies
-> loading the config. Next 15.5.7 requires only glibc 2.17 and builds fine.
+> This project is pinned to **Next 15.5.7**. That pin was originally a hard
+> constraint of the previous host (Hostinger's build image shipped glibc 2.28,
+> while Next 16's native SWC binary needs 2.30, so the build failed there).
 >
-> Verified by reading the required GLIBC symbol versions out of each binary:
+> **That constraint no longer applies on Vercel.** Upgrading to Next 16 is now
+> possible. It is deliberately not done as part of the migration, because a
+> major-version bump is its own change with its own breaking-change surface —
+> do it on a branch, run `npm run lint && npm run typecheck && npm run build`
+> plus `npm run audit:site`, and check the homepage motion and image behaviour
+> before merging.
 >
-> | Package | Needs glibc |
-> |---|---|
-> | `@next/swc-linux-x64-gnu` 16.3.0 | 2.30 ❌ |
-> | `@next/swc-linux-x64-gnu` 15.5.7 | 2.17 ✅ |
-> | `@img/sharp-linux-x64` 0.35 | 2.17 ✅ |
-> | `@img/sharp-libvips-linux-x64` | 2.25 ✅ |
+> Two other choices are leftovers from the same era and are worth knowing about:
 >
-> Before bumping the major version, check the new binary the same way, or
-> confirm Hostinger has moved to a newer build image.
->
-> Related: the Next config is **`next.config.mjs`, not `.ts`** — on purpose. A
-> TypeScript config has to be compiled by SWC before Next can read it, which
-> is the second thing that broke on Hostinger. A `.mjs` config is read
-> directly and cannot fail that way. Do not convert it back.
+> - **`next.config.mjs`, not `.ts`.** Originally because a TypeScript config
+>   has to be compiled by SWC before Next can read it, which broke on the old
+>   host. On Vercel either works. It is kept as `.mjs` because it works and
+>   there is nothing to gain from churning it — not because it is required.
+> - **Build-time packages live in `dependencies`, not `devDependencies`.** The
+>   old host set `NODE_ENV=production` before installing, which made npm skip
+>   `devDependencies` entirely. Vercel installs both, so this is no longer
+>   necessary — but it is also harmless, and moving `sharp` in particular has
+>   a silent failure mode (see the note in section 2).
 
 Built to replace the four-page Webflow site, addressing the 34 findings in the
 July 2026 audit. See [`AUDIT-RESOLUTION.md`](./AUDIT-RESOLUTION.md) for the
@@ -43,7 +43,7 @@ everything still waiting on the client.
 2. [Production build](#2-production-build)
 3. [Environment variables](#3-environment-variables)
 4. [GitHub workflow](#4-github-workflow)
-5. [Hostinger deployment](#5-hostinger-deployment)
+5. [Vercel deployment](#5-vercel-deployment)
 6. [Changing business information](#6-changing-business-information)
 7. [Adding a service](#7-adding-a-service)
 8. [Adding a service area](#8-adding-a-service-area)
@@ -58,8 +58,8 @@ everything still waiting on the client.
 
 ## 1. Local development
 
-Requires **Node 20.9 or newer** (Node 22 LTS recommended — it matches what
-Hostinger runs).
+Requires **Node 20.9 or newer** (Node 22 LTS recommended — it matches the
+version pinned in `.nvmrc`, which Vercel reads).
 
 ```bash
 npm install
@@ -111,8 +111,8 @@ legacy redirects and the 404. It exits non-zero on failure, so it works in CI.
 ## 3. Environment variables
 
 Copy `.env.example` to `.env.local` for local work, and set the same keys in
-Hostinger for production. **Never commit real keys** — `.env*.local` is
-gitignored.
+Vercel (Project → Settings → Environment Variables) for production. **Never
+commit real keys** — `.env*.local` is gitignored.
 
 | Variable | Required | Purpose |
 |---|---|---|
@@ -143,8 +143,9 @@ git commit -m "Describe the change"
 git push -u origin feature/whatever
 ```
 
-Open a pull request into `main`. Hostinger deploys from `main`, so anything
-merged there goes live on the next deploy.
+Open a pull request into `main`. Vercel builds a preview deployment for every
+pull request, and `main` is the production branch — so anything merged there
+goes live automatically.
 
 Before every push, run:
 
@@ -154,46 +155,41 @@ npm run lint && npm run typecheck && npm run build
 
 ---
 
-## 5. Hostinger deployment
+## 5. Vercel deployment
 
-The target is **Hostinger Node.js Web Apps** (Business or Cloud hosting), which
-builds from a GitHub repository.
+The target is **Vercel**, building from this GitHub repository. Next.js needs no
+adapter or custom configuration there — the framework preset detects everything.
 
 ### One-time setup
 
-1. Push this repository to GitHub (see below).
-2. In hPanel → **Websites** → **Web Apps** (or **Node.js**), choose
-   **Create application** and connect the GitHub repository, branch `main`.
-3. Set:
-   - **Node version:** 22 (20 also works; the `engines` field requests ≥20.9)
-   - **Install command:** `npm ci`
+1. Push this repository to GitHub.
+2. In Vercel, **Add New → Project**, import the repository, and accept the
+   detected **Next.js** framework preset. The defaults are correct:
+   - **Install command:** `npm install`
    - **Build command:** `npm run build`
-   - **Start command:** `npm start`
+   - **Output:** handled by the Next.js preset — do not set `output` in
+     `next.config.mjs`
+   - **Node version:** read from `.nvmrc` (22); `engines` also requires ≥20.9
+3. Add every environment variable from section 3, for **Production**,
+   **Preview** and **Development** as appropriate.
+4. Deploy. Vercel gives the project a `*.vercel.app` URL — test there first.
 
-   > Hostinger sets `NODE_ENV=production` before installing, which makes npm
-   > skip `devDependencies`. Everything `next build` needs is therefore in
-   > `dependencies` — see the note in `package.json`. Do not move TypeScript,
-   > Tailwind or sharp back into `devDependencies`; the build will fail, and
-   > moving sharp fails *silently* at runtime by serving unoptimised images.
-   - **Entry / port:** Next reads `PORT` from the environment automatically —
-     leave Hostinger's default unless it asks for an explicit port.
-4. Add every environment variable from section 3. `NEXT_PUBLIC_SITE_URL` must be
-   `https://www.supernovalandscape.com`.
-5. Deploy, and test on the temporary `*.hostingersite.com` URL first.
-
-> While testing on the temporary URL, set `NEXT_PUBLIC_SITE_URL` to that
-> temporary origin. Robots will then block indexing, which is what you want.
-> Switch it to the real domain only at cutover.
+> On preview and `*.vercel.app` deployments, leave `NEXT_PUBLIC_SITE_URL` set to
+> that deployment's own origin. `robots.txt` then disallows the whole site (see
+> section 3), so a preview can never be indexed or become the canonical. Only
+> Production should carry `https://www.supernovalandscape.com`.
 
 ### Connecting the domain
 
 Do this only once the staging build has been signed off.
 
-1. In hPanel, attach `supernovalandscape.com` and `www.supernovalandscape.com`
-   to the application.
-2. Set `www` as the primary hostname and 301 the apex to it — the canonical
-   URLs in this build all use `www`.
-3. Issue the SSL certificate and force HTTPS.
+1. In Vercel → **Project → Settings → Domains**, add both
+   `supernovalandscape.com` and `www.supernovalandscape.com`.
+2. Set `www` as the primary domain and let Vercel 301 the apex to it — the
+   canonical URLs in this build all use `www`.
+3. Point DNS at Vercel (the `A` / `CNAME` records Vercel shows for each domain).
+   SSL is issued automatically once DNS resolves, and HTTPS is forced by
+   default — there is nothing to configure.
 4. Change `NEXT_PUBLIC_SITE_URL` to `https://www.supernovalandscape.com` and
    redeploy, so canonicals and the sitemap point at the live domain.
 5. Confirm `https://www.supernovalandscape.com/robots.txt` allows crawling and
@@ -201,8 +197,14 @@ Do this only once the staging build has been signed off.
 
 ### Subsequent deploys
 
-Push to `main`, then trigger a deploy in hPanel (or enable auto-deploy). Each
-deploy re-runs install and build.
+Pushing to `main` deploys to production automatically. Every other branch and
+pull request gets its own preview deployment at a unique URL.
+
+**`main` is live.** There is no separate "trigger deploy" step to forget, so a
+push to `main` *is* a deploy to the client's production site. Work on a branch
+and merge deliberately. If a deploy needs undoing, Vercel's **Deployments** tab
+can promote a previous build back to production immediately — that is faster
+and safer than pushing a revert commit.
 
 **Do not deploy over the live site without explicit authorisation from the
 client.** Nothing in this repository touches DNS, the Google Business Profile,
@@ -323,7 +325,7 @@ To connect it:
    SendGrid are a small addition to the same adapter.
 2. Verify a sending domain with the provider. Without SPF/DKIM alignment,
    requests land in spam — which is worse than no form at all.
-3. Set in Hostinger:
+3. Set in Vercel (Project → Settings → Environment Variables):
    ```
    QUOTE_DELIVERY_PROVIDER=resend
    QUOTE_DELIVERY_API_KEY=re_xxxxxxxx
@@ -391,7 +393,7 @@ Event wiring lives in [`src/lib/analytics.ts`](./src/lib/analytics.ts).
 - [ ] `npm run typecheck` clean
 - [ ] `npm run build` succeeds
 - [ ] `npm run audit:site https://www.supernovalandscape.com` passes
-- [ ] `NEXT_PUBLIC_SITE_URL` set to the production origin in Hostinger
+- [ ] `NEXT_PUBLIC_SITE_URL` set to the production origin in Vercel
 - [ ] `robots.txt` allows crawling and lists the sitemap
 - [ ] `sitemap.xml` returns 28 URLs, all on the `www` origin
 - [ ] Apex 301s to `www`; `http` 301s to `https`

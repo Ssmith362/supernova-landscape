@@ -3,7 +3,7 @@
  * /public/og/default.png.
  *
  * Built as a static asset rather than a runtime ImageResponse route so there
- * is zero per-request cost on Hostinger and no font-loading dependency at
+ * is zero per-request cost in production and no font-loading dependency at
  * runtime. Pages that have their own strong photography (service, location and
  * project pages) reference that photo directly instead — see src/lib/seo.ts.
  *
