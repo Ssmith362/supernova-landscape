@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Supernova — section background treatments</title>
+<style>
+@font-face{font-family:"Fraunces";src:url("../src/fonts/Fraunces-latin.woff2") format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Archivo";src:url("../src/fonts/Archivo-latin.woff2") format("woff2");font-weight:100 900;font-display:swap}
+:root{
+  --ink:#0b1710;--ink-soft:#33453a;--ink-muted:#5c6b61;
+  --forest-950:#04150c;--forest-900:#052b16;--forest-800:#063b1e;--forest-700:#075c2e;
+  --forest-600:#087038;--forest-500:#0e8846;--forest-400:#35a566;
+  --sage-700:#4a6650;--sage-600:#5f7f60;--sage-500:#789878;--sage-300:#a9c0a9;
+  --sage-200:#cbdccb;--sage-100:#e3ede3;--sage-50:#f1f6f1;
+  --gold-600:#b8801a;--gold-500:#e0a02a;--gold-400:#f0b949;--gold-200:#f7dfa9;
+  --bone:#fbfaf7;--bone-dark:#f4f2ec;
+  --r-xs:12px;--r-pill:999px;--ease:cubic-bezier(.22,1,.36,1);
+  --gutter:clamp(1.25rem,4vw,3rem);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bone);color:var(--ink);font-family:"Archivo",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;letter-spacing:-.015em}
+a{color:inherit;text-decoration:none}
+img{display:block}
+.container{max-width:1240px;margin-inline:auto;padding-inline:var(--gutter);position:relative;z-index:2}
+.eyebrow{font-size:.75rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--forest-600);display:flex;align-items:center;gap:.6em}
+.eyebrow-light{color:var(--sage-300)}
+.star{width:.75em;height:.75em;flex:none;background:var(--gold-500);clip-path:polygon(50% 0%,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0% 50%,39% 39%)}
+.eyebrow-light .star{background:var(--gold-400)}
+.display-2{font-family:"Fraunces",serif;font-size:clamp(1.9rem,3.6vw,2.9rem);line-height:1.06;letter-spacing:-.022em;margin-top:.8rem}
+.lede{margin-top:1rem;max-width:54ch;font-size:1rem;line-height:1.7;color:var(--ink-soft)}
+.lede-d{color:var(--sage-200)}
+.row{margin-top:2.5rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+@media(max-width:800px){.row{grid-template-columns:1fr}}
+.card{position:relative;aspect-ratio:3/2.1;border-radius:var(--r-xs);overflow:hidden;background:var(--forest-950)}
+.card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.card .sc{position:absolute;inset:0;background:linear-gradient(to top,var(--forest-950),rgb(4 21 12/.5) 45%,transparent)}
+.card .b{position:absolute;inset:auto 0 0 0;padding:1rem;z-index:2}
+.card h3{color:#fff;font-size:1.02rem}
+.card p{margin-top:.3rem;font-size:.8rem;color:var(--sage-100);line-height:1.45}
+.sec{position:relative;isolation:isolate;overflow:hidden;padding:4.5rem 0 5rem}
+.light{background:var(--bone)}
+.dark{background:var(--forest-950)}
+.dark h2,.dark h3{color:#fff}
+.bg{position:absolute;inset:0;z-index:0;pointer-events:none}
+
+/* chrome */
+.topbar{position:sticky;top:0;z-index:100;background:rgba(4,21,12,.94);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.12);padding:.7rem var(--gutter);display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.topbar .lbl{color:var(--sage-300);font-size:.7rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-right:auto}
+.pills{display:flex;gap:.4rem;flex-wrap:wrap}
+.pill{padding:.5rem .95rem;border-radius:var(--r-pill);font-size:.78rem;font-weight:700;color:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.2);transition:all .2s var(--ease)}
+.pill:hover{color:var(--forest-950);background:var(--gold-400);border-color:var(--gold-400)}
+.plate{background:#0a0a0a;color:#fff;padding:2.4rem var(--gutter) 1.6rem}
+.plate .tag{font-size:.7rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-400)}
+.plate h2{font-size:clamp(1.4rem,2.5vw,2rem);margin-top:.5rem;color:#fff}
+.plate p{margin-top:.6rem;max-width:72ch;color:#c9cfc9;font-size:.94rem;line-height:1.65}
+.plate .meta{margin-top:.9rem;display:flex;flex-wrap:wrap;gap:.45rem}
+.plate .meta span{font-size:.71rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.35rem .7rem;border-radius:var(--r-pill);border:1px solid rgba(255,255,255,.22);color:#c9cfc9}
+.plate .meta .good{border-color:rgba(53,165,102,.5);color:#7fd3a0}
+.plate .meta .warn{border-color:rgba(224,160,42,.5);color:var(--gold-400)}
+.foot{background:#0a0a0a;color:#9aa39a;padding:3rem var(--gutter);font-size:.85rem;text-align:center}
+
+/* ========== A · MOWING STRIPES ========== */
+.a-l{background:
+  repeating-linear-gradient(96deg,
+    var(--bone) 0 62px, var(--bone-dark) 62px 124px);}
+.a-l::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgb(251 250 247/.85) 0%,rgb(251 250 247/0) 22%,rgb(251 250 247/0) 78%,rgb(251 250 247/.85) 100%)}
+.a-d{background:
+  repeating-linear-gradient(96deg,
+    #04150c 0 62px, #061e10 62px 124px);}
+.a-d::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(120% 80% at 20% 10%,rgb(7 92 46/.35),transparent 60%)}
+.a-sweep{position:absolute;inset:0;
+  background:linear-gradient(96deg,transparent 30%,rgb(240 185 73/.10) 50%,transparent 70%)}
+
+/* ========== B · TOPOGRAPHIC CONTOURS ========== */
+.b-svg{position:absolute;inset:-10%;width:120%;height:120%}
+.b-l .b-svg{opacity:.5}
+.b-d .b-svg{opacity:.45}
+
+/* ========== C · BLUEPRINT GRID ========== */
+.c-l{background-color:var(--bone);
+  background-image:
+    linear-gradient(rgb(120 152 120/.16) 1px,transparent 1px),
+    linear-gradient(90deg,rgb(120 152 120/.16) 1px,transparent 1px),
+    linear-gradient(rgb(120 152 120/.07) 1px,transparent 1px),
+    linear-gradient(90deg,rgb(120 152 120/.07) 1px,transparent 1px);
+  background-size:120px 120px,120px 120px,24px 24px,24px 24px}
+.c-d{background-color:var(--forest-950);
+  background-image:
+    linear-gradient(rgb(169 192 169/.13) 1px,transparent 1px),
+    linear-gradient(90deg,rgb(169 192 169/.13) 1px,transparent 1px),
+    linear-gradient(rgb(169 192 169/.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgb(169 192 169/.05) 1px,transparent 1px);
+  background-size:120px 120px,120px 120px,24px 24px,24px 24px}
+.c-mark{position:absolute;width:14px;height:14px;opacity:.85}
+.c-mark::before,.c-mark::after{content:"";position:absolute;background:var(--gold-500)}
+.c-mark::before{left:50%;top:0;width:1.5px;height:100%;transform:translateX(-50%)}
+.c-mark::after{top:50%;left:0;height:1.5px;width:100%;transform:translateY(-50%)}
+.c-fade{position:absolute;inset:0;background:radial-gradient(80% 60% at 50% 45%,transparent 30%,var(--fadeto) 100%)}
+
+/* ========== D · AURORA / NEBULA WASH ========== */
+.d-l{background:var(--bone)}
+.d-l .blob{position:absolute;border-radius:50%;filter:blur(70px)}
+.d-d{background:var(--forest-950)}
+.d-d .blob{position:absolute;border-radius:50%;filter:blur(90px)}
+.grain{position:absolute;inset:0;opacity:.5;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E")}
+
+/* ========== E · BOTANICAL LINEWORK ========== */
+.e-svg{position:absolute;pointer-events:none}
+.e-l .e-svg{stroke:var(--sage-500);opacity:.30}
+.e-d .e-svg{stroke:var(--sage-300);opacity:.16}
+.e-glow{position:absolute;inset:0;background:radial-gradient(90% 70% at 80% 20%,rgb(224 160 42/.09),transparent 62%)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="lbl">Supernova · section backgrounds · light + dark pairs</span>
+  <nav class="pills">
+    <a class="pill" href="#a">A · Mowing stripes</a>
+    <a class="pill" href="#b">B · Topographic</a>
+    <a class="pill" href="#c">C · Blueprint</a>
+    <a class="pill" href="#d">D · Aurora wash</a>
+    <a class="pill" href="#e">E · Botanical</a>
+  </nav>
+</div>
+
+<!-- ================================================================= A -->
+<section class="plate" id="a">
+  <span class="tag">Option A</span>
+  <h2>Mowing stripes</h2>
+  <p>The company's own signature, turned into the page's texture. Wide alternating bands at the same slight angle as the stripes in your photographs — so faint you read them as "this surface has a grain" rather than as a pattern. A single warm sweep crosses the light version like sun down a fresh cut. Nothing on the page says "we mow lawns properly" more directly than this.</p>
+  <div class="meta"><span class="good">Most on-brand of the five</span><span class="good">Pure CSS, zero weight</span><span class="good">Echoes the hero photo</span><span class="warn">Banding can show on cheap panels</span></div>
+</section>
+
+<section class="sec light a-l">
+  <div class="bg a-sweep"></div>
+  <div class="container">
+    <p class="eyebrow"><i class="star"></i> What we do</p>
+    <h2 class="display-2">Nine services, nine places to start</h2>
+    <p class="lede">Everything below has its own page with real detail — what is included, what it costs you to skip it, and when in a Spokane year it should happen.</p>
+    <div class="row" id="rowA1"></div>
+  </div>
+</section>
+<section class="sec dark a-d">
+  <div class="container">
+    <p class="eyebrow eyebrow-light"><i class="star"></i> Why homeowners pick us</p>
+    <h2 class="display-2">Four things worth knowing before you call anyone</h2>
+    <p class="lede lede-d">Weekly means weekly. Family-owned. One crew for most of the yard. And a rating we would rather you checked than took our word for.</p>
+    <div class="row" id="rowA2"></div>
+  </div>
+</section>
+
+<!-- ================================================================= B -->
+<section class="plate" id="b">
+  <span class="tag">Option B</span>
+  <h2>Topographic contours</h2>
+  <p>Elevation lines drifting across the section, the way a survey map reads. It is the most literal possible answer to "landscape" and it flatters the two things the business actually sells — grading and terrain. On the dark register the same lines glow faintly, which reads as a contour map lit from below rather than a repeat of the starfield.</p>
+  <div class="meta"><span class="good">Says "landscaping" without a leaf cliché</span><span class="good">Distinctive — nobody local has this</span><span class="good">Scales to any section height</span><span class="warn">One inline SVG per section</span></div>
+</section>
+
+<section class="sec light b-l">
+  <svg class="b-svg" viewBox="0 0 1200 600" preserveAspectRatio="none" fill="none" aria-hidden="true">
+    <g stroke="#789878" stroke-width="1.1" class="cont"></g>
+  </svg>
+  <div class="container">
+    <p class="eyebrow"><i class="star"></i> A Spokane year</p>
+    <h2 class="display-2">What we are doing, and when</h2>
+    <p class="lede">Landscaping here is seasonal work with narrow windows. Miss the overseeding window or the blow-out window and it costs you.</p>
+    <div class="row" id="rowB1"></div>
+  </div>
+</section>
+<section class="sec dark b-d">
+  <svg class="b-svg" viewBox="0 0 1200 600" preserveAspectRatio="none" fill="none" aria-hidden="true">
+    <g stroke="#35a566" stroke-width="1.1" class="cont"></g>
+  </svg>
+  <div class="container">
+    <p class="eyebrow eyebrow-light"><i class="star"></i> Real Spokane jobs</p>
+    <h2 class="display-2">These are our yards.</h2>
+    <p class="lede lede-d">Every photograph on this site is Supernova's own work — no stock imagery. Most of these started as yards nobody had touched in years.</p>
+    <div class="row" id="rowB2"></div>
+  </div>
+</section>
+
+<!-- ================================================================= C -->
+<section class="plate" id="c">
+  <span class="tag">Option C</span>
+  <h2>Blueprint grid</h2>
+  <p>A fine drafting grid with gold registration crosses at the major intersections, faded out toward the edges so it never competes with the content sitting on it. It frames the whole site as measured, planned work rather than mow-and-go — which is the argument the Landscape Design &amp; Installation page is already making in words.</p>
+  <div class="meta"><span class="good">Reinforces the "designed" pitch</span><span class="good">Pure CSS gradients</span><span class="good">Very cheap to render</span><span class="warn">Reads a little tech/SaaS</span></div>
+</section>
+
+<section class="sec light c-l" style="--fadeto:var(--bone)">
+  <div class="bg" id="marksC1"></div>
+  <div class="bg c-fade"></div>
+  <div class="container">
+    <p class="eyebrow"><i class="star"></i> What happens next</p>
+    <h2 class="display-2">From your call to work on the ground</h2>
+    <p class="lede">Free estimates and consultations. We would rather walk the property with you than price a job off a description.</p>
+    <div class="row" id="rowC1"></div>
+  </div>
+</section>
+<section class="sec dark c-d" style="--fadeto:var(--forest-950)">
+  <div class="bg" id="marksC2"></div>
+  <div class="bg c-fade"></div>
+  <div class="container">
+    <p class="eyebrow eyebrow-light"><i class="star"></i> What people say</p>
+    <h2 class="display-2">4.9 stars, 53 reviews</h2>
+    <p class="lede lede-d">Real reviews from Google, Nextdoor and customers who wrote to us directly. Nothing here is written by us.</p>
+    <div class="row" id="rowC2"></div>
+  </div>
+</section>
+
+<!-- ================================================================= D -->
+<section class="plate" id="d">
+  <span class="tag">Option D</span>
+  <h2>Aurora wash + film grain</h2>
+  <p>Large, very soft colour blooms drifting under the content — sage and gold on the light register, forest and ember on the dark — with a fine film grain over the top so the gradients never band and the whole surface feels like paper rather than screen. This is the option that finally cashes in the name: the dark sections stop being flat black and start looking like sky.</p>
+  <div class="meta"><span class="good">Richest, most premium feel</span><span class="good">Grain kills gradient banding</span><span class="good">Pairs beautifully with the starfield</span><span class="warn">Blur is real GPU work</span></div>
+</section>
+
+<section class="sec light d-l">
+  <div class="bg">
+    <span class="blob" style="width:38rem;height:38rem;left:-12rem;top:-14rem;background:rgb(120 152 120/.30)"></span>
+    <span class="blob" style="width:30rem;height:30rem;right:-8rem;top:20%;background:rgb(224 160 42/.20)"></span>
+    <span class="blob" style="width:34rem;height:34rem;left:35%;bottom:-18rem;background:rgb(53 165 102/.16)"></span>
+    <span class="grain"></span>
+  </div>
+  <div class="container">
+    <p class="eyebrow"><i class="star"></i> Where we work</p>
+    <h2 class="display-2">Greater Spokane, Spokane Valley and Liberty Lake</h2>
+    <p class="lede">Three areas, three genuinely different sets of conditions — old trees and steep lots in the city, big irrigated lawns in the Valley, HOA frontage standards in Liberty Lake.</p>
+    <div class="row" id="rowD1"></div>
+  </div>
+</section>
+<section class="sec dark d-d">
+  <div class="bg">
+    <span class="blob" style="width:44rem;height:44rem;left:-14rem;top:-18rem;background:rgb(7 92 46/.55)"></span>
+    <span class="blob" style="width:32rem;height:32rem;right:-6rem;top:8%;background:rgb(224 160 42/.20)"></span>
+    <span class="blob" style="width:38rem;height:38rem;left:45%;bottom:-20rem;background:rgb(14 136 70/.30)"></span>
+    <span class="grain" style="opacity:.35"></span>
+  </div>
+  <div class="container">
+    <p class="eyebrow eyebrow-light"><i class="star"></i> Why homeowners pick us</p>
+    <h2 class="display-2">Four things worth knowing before you call anyone</h2>
+    <p class="lede lede-d">Weekly means weekly. Family-owned. One crew for most of the yard. And a rating we would rather you checked than took our word for.</p>
+    <div class="row" id="rowD2"></div>
+  </div>
+</section>
+
+<!-- ================================================================= E -->
+<section class="plate" id="e">
+  <span class="tag">Option E</span>
+  <h2>Botanical linework</h2>
+  <p>Oversized single-weight line drawings — fern, branch, grass blades — bleeding off the section edges at very low opacity, like a botanical plate printed under the type. Warmer and more human than the geometric options, and it gives each section a chance to carry a different plant so no two backgrounds repeat exactly.</p>
+  <div class="meta"><span class="good">Warmest, most editorial</span><span class="good">Per-section variety built in</span><span class="warn">Closest to a garden-centre cliché</span><span class="warn">Needs drawing per section</span></div>
+</section>
+
+<section class="sec light e-l">
+  <svg class="e-svg" style="right:-6rem;top:-4rem;width:34rem;height:34rem" viewBox="0 0 200 200" fill="none" stroke-width="1.1" aria-hidden="true">
+    <path d="M100 190 C100 120 100 60 100 10"/>
+    <g id="fronds"></g>
+  </svg>
+  <div class="container">
+    <p class="eyebrow"><i class="star"></i> Common questions</p>
+    <h2 class="display-2">Before you call</h2>
+    <p class="lede">Each service page answers questions specific to that job — what is included, what it costs you to skip it, and when it should happen.</p>
+    <div class="row" id="rowE1"></div>
+  </div>
+</section>
+<section class="sec dark e-d">
+  <div class="bg e-glow"></div>
+  <svg class="e-svg" style="left:-8rem;bottom:-8rem;width:38rem;height:38rem;transform:rotate(18deg)" viewBox="0 0 200 200" fill="none" stroke-width="1.1" aria-hidden="true">
+    <g id="blades"></g>
+  </svg>
+  <div class="container">
+    <p class="eyebrow eyebrow-light"><i class="star"></i> Real Spokane jobs</p>
+    <h2 class="display-2">Drag the handle. These are our yards.</h2>
+    <p class="lede lede-d">Every photograph on this site is Supernova's own work — no stock imagery.</p>
+    <div class="row" id="rowE2"></div>
+  </div>
+</section>
+
+<footer class="foot">
+  Each option is shown twice — once on the light register, once on the dark — because they have to work as a pair.<br>
+  Real photography, Fraunces / Archivo, exact palette from <code>globals.css</code>. All five are pure CSS or one inline SVG. Tell me a letter.
+</footer>
+
+<script>
+const S=[
+ {n:"Lawn Maintenance",s:"Weekly mowing, edging, trimming and haul-off.",i:"projects/striped-lawn-barn.jpg"},
+ {n:"Landscape Installs",s:"Beds, boulders, retaining walls and planting.",i:"projects/backyard-reset-after.jpg"},
+ {n:"Snow Removal",s:"Driveways, walks, lots and ice control.",i:"services/snow-plow-truck.jpg"},
+ {n:"Sod Installation",s:"Graded, prepped and laid so it takes.",i:"projects/sod-lawn.jpg"},
+ {n:"Aeration & Overseeding",s:"Relieves compaction, thickens thin turf.",i:"projects/striped-lawn-acreage.jpg"},
+ {n:"Seasonal Clean-Ups",s:"Full-property reset, everything hauled away.",i:"projects/side-yard-after.jpg"}
+];
+const card=x=>`<a class="card"><img loading="lazy" src="../public/images/${x.i}" alt="${x.n}"><span class="sc"></span><div class="b"><h3>${x.n}</h3><p>${x.s}</p></div></a>`;
+const pick=(a,b,c)=>[S[a],S[b],S[c]].map(card).join("");
+rowA1.innerHTML=pick(0,1,2); rowA2.innerHTML=pick(3,4,5);
+rowB1.innerHTML=pick(4,5,0); rowB2.innerHTML=pick(1,3,2);
+rowC1.innerHTML=pick(1,0,3); rowC2.innerHTML=pick(2,4,5);
+rowD1.innerHTML=pick(0,4,1); rowD2.innerHTML=pick(5,2,3);
+rowE1.innerHTML=pick(3,1,4); rowE2.innerHTML=pick(0,5,2);
+
+/* B — contour lines: stacked sine ridges, each offset and slightly reshaped */
+document.querySelectorAll(".cont").forEach(g=>{
+  let out="";
+  for(let i=0;i<16;i++){
+    const y=40+i*36, amp=26+ (i%4)*9, w=1-(Math.abs(i-8)/16);
+    let d=`M0 ${y}`;
+    for(let x=0;x<=1200;x+=60){
+      d+=` Q ${x+30} ${y+Math.sin((x/220)+i*.55)*amp} ${x+60} ${y+Math.sin(((x+60)/220)+i*.55)*amp}`;
+    }
+    out+=`<path d="${d}" opacity="${(.25+w*.6).toFixed(2)}"/>`;
+  }
+  g.innerHTML=out;
+});
+
+/* C — registration crosses on the 120px major grid */
+[["marksC1",7],["marksC2",7]].forEach(([id])=>{
+  const host=document.getElementById(id); let out="";
+  for(let r=0;r<6;r++) for(let c=0;c<12;c++)
+    out+=`<span class="c-mark" style="left:${c*120+113}px;top:${r*120+113}px"></span>`;
+  host.innerHTML=out;
+});
+
+/* E — fern fronds and grass blades */
+let f="";
+for(let i=0;i<26;i++){
+  const y=182-i*6.6, len=Math.max(6,52-Math.abs(i-9)*3.4);
+  f+=`<path d="M100 ${y} C ${100-len*.5} ${y-4} ${100-len*.85} ${y-10} ${100-len} ${y-16}"/>`;
+  f+=`<path d="M100 ${y} C ${100+len*.5} ${y-4} ${100+len*.85} ${y-10} ${100+len} ${y-16}"/>`;
+}
+document.getElementById("fronds").innerHTML=f;
+let b="";
+for(let i=0;i<22;i++){
+  const x=10+i*8.4, h=60+Math.sin(i*1.3)*38, lean=(i%2?1:-1)*(12+i%5*4);
+  b+=`<path d="M${x} 200 C ${x+lean*.3} ${200-h*.5} ${x+lean*.7} ${200-h*.8} ${x+lean} ${200-h}"/>`;
+}
+document.getElementById("blades").innerHTML=b;
+</script>
+</body>
+</html>

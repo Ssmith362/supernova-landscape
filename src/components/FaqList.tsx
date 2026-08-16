@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useState } from "react";
 import type { Faq } from "@/content/types";
+import { StarMark } from "./ui/StarMark";
 import { withPhoneLinks } from "./PhoneText";
 
 /**
@@ -74,25 +75,29 @@ export function FaqList({
               aria-expanded={open}
               aria-controls={panelId}
               onClick={() => toggle(i)}
-              className={`flex w-full cursor-pointer list-none items-start justify-between gap-6 py-5 text-left font-display text-[1.08rem] font-semibold leading-snug ${
+              className={`group flex w-full cursor-pointer list-none items-start justify-between gap-6 py-5 text-left font-display text-[1.08rem] font-semibold leading-snug ${
                 dark ? "text-white" : "text-ink"
               }`}
             >
-              {faq.q}
+              {/* The ember underline sweeps in from the left on hover. */}
+              <span className="relative">
+                {faq.q}
+                <span
+                  aria-hidden="true"
+                  className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-gold-500 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100 group-focus-visible:scale-x-100"
+                />
+              </span>
               <span
-                className={`mt-0.5 grid size-7 shrink-0 place-items-center rounded-full border transition-transform duration-200 ${
-                  open ? "rotate-45" : ""
-                } ${dark ? "border-white/25 text-gold-400" : "border-sage-300 text-forest-600"}`}
+                className={`mt-0.5 grid size-7 shrink-0 place-items-center rounded-full border ${
+                  dark
+                    ? "border-white/25 text-gold-400"
+                    : "border-sage-300 text-forest-600"
+                }`}
                 aria-hidden="true"
               >
-                <svg width="12" height="12" viewBox="0 0 12 12">
-                  <path
-                    d="M6 1v10M1 6h10"
-                    stroke="currentColor"
-                    strokeWidth="1.7"
-                    strokeLinecap="round"
-                  />
-                </svg>
+                {/* The brand star, rotating 45° when the answer opens — see
+                    the `.faq-star` rule, which keys off `aria-expanded`. */}
+                <StarMark size={12} className="faq-star" />
               </span>
             </button>
             <div

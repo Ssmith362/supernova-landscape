@@ -5,23 +5,25 @@ import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ButtonLink } from "@/components/ui/Button";
+import { CurveDivider } from "@/components/ui/CurveDivider";
 import { BeforeAfter } from "@/components/BeforeAfter";
 import { CtaBand } from "@/components/CtaBand";
 import { FaqList } from "@/components/FaqList";
 import { JsonLd } from "@/components/JsonLd";
-import { PhoneLink } from "@/components/PhoneLink";
-import { QuoteCta } from "@/components/QuoteCta";
 import { RatingBadge } from "@/components/RatingBadge";
-import { ReviewCard } from "@/components/ReviewCard";
-import { ServiceCard } from "@/components/ServiceCard";
-import { Stars } from "@/components/Stars";
-import { HeroBackground } from "@/components/motion/HeroBackground";
 import { ImageReveal } from "@/components/motion/ImageReveal";
 import { ProcessTimeline } from "@/components/motion/ProcessTimeline";
 import { Reveal } from "@/components/motion/Reveal";
 import { StaggerGroup } from "@/components/motion/StaggerGroup";
 
-import { business, reputation } from "@/config/site";
+import { Hero } from "@/components/home/Hero";
+import { StatStrip } from "@/components/home/StatStrip";
+import { ServicesReel } from "@/components/home/ServicesReel";
+import { WhyPoints } from "@/components/home/WhyPoints";
+import { SeasonRibbon } from "@/components/home/SeasonRibbon";
+import { ReviewsShowcase } from "@/components/home/ReviewsShowcase";
+
+import { reputation } from "@/config/site";
 import { services } from "@/content/services";
 import { locations } from "@/content/locations";
 import { projects } from "@/content/projects";
@@ -37,21 +39,24 @@ export const metadata: Metadata = buildMetadata({
   path: "/",
 });
 
-const heroPoints = [
-  "Free estimates and consultations",
-  "Weekly mowing routes — never bi-weekly",
-  "Landscape installs, irrigation and snow",
-];
-
-const trustItems = [
-  {
-    k: `${reputation.rating} ★`,
-    v: `Average across ${reputation.reviewCount} Google reviews`,
-  },
-  { k: "Free", v: "Estimates and on-site consultations" },
-  { k: "Weekly", v: "Mowing routes — we do not run bi-weekly" },
-  { k: "Year-round", v: "Mowing through summer, plowing through winter" },
-];
+/**
+ * REGISTER ALTERNATION
+ * The page runs night → day → night down its whole length, and the ridge
+ * dividers below sit at every one of those boundaries so a colour change
+ * always reads as designed rather than as two blocks stacked.
+ *
+ *   hero · stats            night   (one continuous opening block)
+ *   services                day
+ *   before/after · why      night   (one continuous block, same reasoning)
+ *   seasonal                day
+ *   reviews                 night
+ *   areas · process · faq   day     (alternating bone / sage tints)
+ *   cta · footer            night
+ *
+ * The two light runs that touch — areas→process→faq — alternate between
+ * `bone` and `sage-50` rather than repeating one flat white, which is the
+ * case the "no two adjacent flat white sections" rule is actually about.
+ */
 
 const whyPoints = [
   {
@@ -72,10 +77,29 @@ const whyPoints = [
   },
 ];
 
+/**
+ * SEASON PHOTOGRAPHY
+ * The ribbon needs one image per season, and the library has no shots taken
+ * specifically as "a season". These are chosen because they genuinely depict
+ * that season's work: fresh beds for the spring reset, the striped summer
+ * lawn for mowing season, the bare-tree dormant yard for the fall clean-up,
+ * and cleared walks for winter.
+ *
+ * Summer and Winter reuse the Lawn Maintenance and Residential Snow photos.
+ * That reuse is honest — those services ARE the season — and the panels sit
+ * several screens apart from the services section. Fall uses the one image
+ * freed up when Seasonal Clean-Ups moved to the higher-resolution
+ * side-yard-after.jpg; at 500x375 it is the weakest file here and is on the
+ * list in PHOTO-SHOT-LIST.md.
+ */
 const seasons = [
   {
     season: "Spring",
     window: "March – May",
+    image: {
+      src: "/images/projects/front-entry-beds.jpg",
+      alt: "Freshly cleared and edged front entry beds after a spring clean-up by Supernova Landscape",
+    },
     items: [
       "Spring clean-up and bed clear-out",
       "Sprinkler turn-on and system check",
@@ -87,6 +111,10 @@ const seasons = [
   {
     season: "Summer",
     window: "June – August",
+    image: {
+      src: "/images/projects/striped-lawn-barn.jpg",
+      alt: "A large Spokane lawn in full summer growth, freshly cut with even mowing stripes beside a white fence and red barn",
+    },
     items: [
       "Weekly mowing, edging and trimming",
       "Irrigation repairs and coverage fixes",
@@ -103,6 +131,10 @@ const seasons = [
   {
     season: "Fall",
     window: "September – November",
+    image: {
+      src: "/images/projects/mulch-island-bed.jpg",
+      alt: "A Spokane front yard cleared and freshly mulched for fall, with the trees bare and the lawn going dormant",
+    },
     items: [
       "Aeration and overseeding — the best window of the year",
       "Sprinkler blow-outs before the first hard freeze",
@@ -119,6 +151,10 @@ const seasons = [
   {
     season: "Winter",
     window: "December – February",
+    image: {
+      src: "/images/services/snow-sidewalk.jpg",
+      alt: "A Spokane sidewalk and entryway cleared of snow by Supernova Landscape",
+    },
     items: [
       "Residential driveways, walks and entryways",
       "Commercial lots, sidewalks and entrances",
@@ -153,158 +189,38 @@ const processSteps = [
 ];
 
 export default function HomePage() {
-  const featured = services.filter((s) => s.featured);
-  const rest = services.filter((s) => !s.featured);
+  // The reel shows all nine services in content order and weights none of
+  // them, so the featured/rest split the bento needed is gone from here. The
+  // `featured` flag is still read by /services.
   const beforeAfters = projects.filter((p) => p.before).slice(0, 2);
-  const showcase = projects.find(
-    (p) => p.slug === "boulder-slope-planting",
-  )!;
+  const showcase = projects.find((p) => p.slug === "boulder-slope-planting")!;
+
+  // Resolve service names here so the tabs component stays free of content
+  // imports and receives only serialisable props.
+  const seasonPanels = seasons.map((s) => ({
+    season: s.season,
+    window: s.window,
+    items: s.items,
+    image: s.image,
+    links: s.slugs.map((slug) => {
+      const svc = services.find((x) => x.slug === slug)!;
+      return { slug, name: svc.name };
+    }),
+  }));
 
   return (
     <>
       <JsonLd data={graph(faqSchema(homepageFaqs))} />
 
-      {/* ---------------------------------------------------------------- HERO */}
-      <section className="relative isolate overflow-hidden bg-forest-950">
-        <HeroBackground
-          src="/images/heroes/home.jpg"
-          alt="A large lawn maintained by Supernova Landscape, freshly cut with even mowing stripes, beside a white fence and a red barn"
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-r from-forest-950 via-forest-950/85 to-forest-950/35"
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-t from-forest-950 via-transparent to-forest-950/50"
-        />
+      {/* ============================================================ NIGHT */}
+      <Hero />
+      <StatStrip />
+      <div className="bg-forest-950">
+        <CurveDivider fill="var(--color-bone)" />
+      </div>
 
-        <Container className="relative py-16 sm:py-24 lg:py-28">
-          <div className="max-w-2xl">
-            <p className="reveal-on-load eyebrow eyebrow-light">
-              Spokane · Spokane Valley · Liberty Lake
-            </p>
-
-            <h1
-              className="reveal-on-load mt-4 text-[2.3rem] leading-[1.06] text-white sm:text-[3.1rem] lg:text-[3.5rem]"
-              style={{ animationDelay: "80ms" }}
-            >
-              Landscaping, lawn care and snow removal, done properly.
-            </h1>
-
-            <p
-              className="reveal-on-load mt-5 max-w-xl text-[1.08rem] leading-relaxed text-sage-100 sm:text-[1.15rem]"
-              style={{ animationDelay: "160ms" }}
-            >
-              Supernova Landscape is a family-owned Spokane crew handling weekly
-              mowing, irrigation, landscape installs, seasonal clean-ups and
-              snow — for homes and businesses across the greater Spokane area.
-            </p>
-
-            {/* The trust signal, above the fold, on the first screen. */}
-            <div
-              className="reveal-on-load mt-7 inline-flex flex-wrap items-center gap-x-3 gap-y-1.5 border border-white/20 bg-forest-950/45 px-4 py-3 backdrop-blur-sm"
-              style={{ animationDelay: "240ms" }}
-            >
-              <Stars rating={reputation.rating} size={19} />
-              <span className="text-[1.05rem] font-bold text-white">
-                {reputation.rating.toFixed(1)}
-              </span>
-              <span className="text-[0.95rem] text-sage-100">
-                from {reputation.reviewCount} Google reviews
-              </span>
-              <a
-                href={reputation.googleProfileUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[0.9rem] font-bold text-gold-400 underline underline-offset-4 hover:text-gold-200"
-              >
-                Read them
-                <span className="sr-only"> on Google (opens in a new tab)</span>
-              </a>
-            </div>
-
-            <div
-              className="reveal-on-load mt-8 flex flex-col gap-3 sm:flex-row"
-              style={{ animationDelay: "320ms" }}
-            >
-              <QuoteCta location="hero" size="lg">
-                Get a Free Quote
-              </QuoteCta>
-              <PhoneLink
-                location="hero"
-                className="inline-flex min-h-14 items-center justify-center gap-2.5 rounded-xs border border-white/40 px-7 text-[1.05rem] font-bold text-white transition-[color,background-color,border-color,transform] duration-150 hover:-translate-y-px hover:border-white hover:bg-white/10 focus-visible:-translate-y-px focus-visible:border-white focus-visible:bg-white/10 active:translate-y-0"
-              >
-                <svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true">
-                  <path
-                    d="M4.6 2.5h2.6l1.3 3.3-1.6 1.2a10.6 10.6 0 0 0 4.6 4.6l1.2-1.6 3.3 1.3v2.6a1.6 1.6 0 0 1-1.7 1.6A13.3 13.3 0 0 1 3 4.2a1.6 1.6 0 0 1 1.6-1.7Z"
-                    fill="currentColor"
-                  />
-                </svg>
-                {business.phone.display}
-              </PhoneLink>
-            </div>
-
-            <ul
-              className="reveal-on-load mt-8 flex flex-wrap gap-x-6 gap-y-2"
-              style={{ animationDelay: "400ms" }}
-            >
-              {heroPoints.map((p) => (
-                <li
-                  key={p}
-                  className="flex items-center gap-2 text-[0.9rem] text-sage-100"
-                >
-                  <svg
-                    width="15"
-                    height="15"
-                    viewBox="0 0 16 16"
-                    aria-hidden="true"
-                    className="shrink-0 text-gold-400"
-                  >
-                    <path
-                      d="M2.5 8.5l3.5 3.5 7.5-8"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.1"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  {p}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Container>
-      </section>
-
-      {/* -------------------------------------------------------- TRUST STRIP */}
-      <section className="border-b border-sage-200 bg-white">
-        <Container>
-          <StaggerGroup
-            as="dl"
-            itemAs="div"
-            className="grid divide-sage-200 sm:grid-cols-2 sm:divide-x lg:grid-cols-4"
-            itemClassName="px-2 py-7 sm:px-6"
-            stagger={80}
-          >
-            {trustItems.map((item) => (
-              <div key={item.k}>
-                <dt className="font-display text-[1.6rem] font-semibold leading-none text-forest-700">
-                  {item.k}
-                </dt>
-                <dd className="mt-2 text-[0.9rem] leading-snug text-ink-soft">
-                  {item.v}
-                </dd>
-                <span aria-hidden="true" className="reveal-rule-x mt-4 block h-px w-8 bg-gold-500" />
-              </div>
-            ))}
-          </StaggerGroup>
-        </Container>
-      </section>
-
-      {/* ------------------------------------------------------------ SERVICES */}
-      <section className="py-20 sm:py-24">
+      {/* ============================================================== DAY */}
+      <section className="bg-bone py-20 sm:py-24">
         <Container>
           <div className="flex flex-wrap items-end justify-between gap-6">
             <Reveal>
@@ -320,58 +236,25 @@ export default function HomePage() {
               </ButtonLink>
             </Reveal>
           </div>
-
-          <StaggerGroup
-            as="div"
-            itemAs="div"
-            className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-            stagger={80}
-            cap={3}
-          >
-            {featured.map((s, i) => (
-              <ServiceCard key={s.slug} service={s} priority={i < 3} />
-            ))}
-          </StaggerGroup>
-
-          <StaggerGroup
-            as="ul"
-            itemAs="li"
-            className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
-            stagger={60}
-            cap={6}
-            baseDelay={120}
-          >
-            {rest.map((s) => (
-              <Link
-                key={s.slug}
-                href={`/services/${s.slug}`}
-                className="group flex h-full items-start justify-between gap-4 border border-sage-200 bg-white p-5 transition-colors hover:border-forest-600"
-              >
-                <span>
-                  <span className="block font-display text-[1.05rem] font-semibold text-ink">
-                    {s.name}
-                  </span>
-                  <span className="mt-1 block text-[0.86rem] leading-snug text-ink-muted">
-                    {s.summary}
-                  </span>
-                </span>
-                <span
-                  aria-hidden="true"
-                  className="mt-1 shrink-0 text-forest-600 transition-transform group-hover:translate-x-1"
-                >
-                  →
-                </span>
-              </Link>
-            ))}
-          </StaggerGroup>
         </Container>
-      </section>
 
-      {/* ------------------------------------------------------ BEFORE / AFTER */}
-      <section className="bg-sage-50 py-20 sm:py-24">
-        <Container>
+        {/* Outside the Container on purpose. The reel is full-bleed so cards
+            scroll out to the screen edge — that overflow is what signals
+            there is more to the right. Its own `--reel-inset` keeps the first
+            card aligned with the heading above; see `.reel-track`. */}
+        <ServicesReel services={services} />
+      </section>
+      <div className="bg-bone">
+        <CurveDivider fill="var(--color-forest-950)" flip ornament />
+      </div>
+
+      {/* ============================================================ NIGHT */}
+      <section className="relative isolate overflow-hidden bg-forest-950 py-20 sm:py-24">
+        <div aria-hidden="true" className="starfield opacity-60" />
+        <Container className="relative">
           <Reveal>
             <SectionHeading
+              tone="dark"
               eyebrow="Real Spokane jobs"
               title="Drag the handle. These are our yards."
               lede="Every photograph on this site is Supernova's own work — no stock imagery. Most of these started as yards nobody had touched in years."
@@ -390,6 +273,7 @@ export default function HomePage() {
                 before={p.before!}
                 after={p.after}
                 label={p.title}
+                tone="dark"
               />
             ))}
           </StaggerGroup>
@@ -397,9 +281,9 @@ export default function HomePage() {
           <Reveal
             as="div"
             delay={140}
-            className="mt-10 grid items-center gap-8 border border-sage-200 bg-white p-6 sm:p-8 lg:grid-cols-[1fr_1.1fr]"
+            className="hairline-dark mt-10 grid items-center gap-8 rounded-xs bg-white/[0.03] p-6 sm:p-8 lg:grid-cols-[1fr_1.1fr]"
           >
-            <ImageReveal className="aspect-4/3 bg-sage-100">
+            <ImageReveal className="aspect-4/3 overflow-hidden rounded-xs bg-forest-900">
               <Image
                 src={showcase.after.src}
                 alt={showcase.after.alt}
@@ -410,11 +294,9 @@ export default function HomePage() {
               />
             </ImageReveal>
             <div>
-              <p className="eyebrow">From the gallery</p>
-              <h3 className="mt-3 text-[1.55rem] leading-tight text-ink">
-                {showcase.title}
-              </h3>
-              <p className="mt-3 text-[1rem] leading-relaxed text-ink-soft">
+              <p className="eyebrow eyebrow-light">From the gallery</p>
+              <h3 className="display-3 mt-3 text-white">{showcase.title}</h3>
+              <p className="mt-3 text-[1rem] leading-relaxed text-sage-200">
                 {showcase.blurb}
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
@@ -423,7 +305,7 @@ export default function HomePage() {
                 </ButtonLink>
                 <ButtonLink
                   href="/services/landscape-design-installation"
-                  variant="ghost"
+                  variant="onDark"
                 >
                   About landscape installs
                 </ButtonLink>
@@ -433,139 +315,78 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* ----------------------------------------------------------------- WHY */}
-      <section className="py-20 sm:py-24">
-        <Container>
+      {/* Continuous with the section above — same night register, no divider.
+
+          NOTE: no `overflow-hidden` here, deliberately. WhyPoints pins its
+          numeral column with `position: sticky`, and any ancestor with a
+          clipping overflow silently turns a sticky element back into a
+          static one — it scrolls away instead of pinning, with no error.
+          Nothing in this section overflows (the starfield elsewhere clips
+          its own children), so there is nothing to clip. */}
+      <section className="relative isolate bg-forest-950 pb-20 sm:pb-24">
+        <Container className="relative">
           <Reveal>
             <SectionHeading
+              tone="dark"
               eyebrow="Why homeowners pick us"
               title="Four things worth knowing before you call anyone"
             />
           </Reveal>
-          <StaggerGroup
-            as="div"
-            itemAs="div"
-            className="mt-12 grid gap-x-10 gap-y-9 sm:grid-cols-2"
-            stagger={90}
-            baseDelay={100}
-          >
-            {whyPoints.map((p, i) => (
-              <div key={p.title} className="relative pt-5">
-                <span
-                  aria-hidden="true"
-                  className="reveal-rule-x absolute inset-x-0 top-0 h-0.5 bg-forest-600"
-                />
-                <span className="font-display text-[0.9rem] font-bold text-forest-600">
-                  0{i + 1}
-                </span>
-                <h3 className="mt-1.5 text-[1.25rem] leading-snug text-ink">
-                  {p.title}
-                </h3>
-                <p className="mt-2.5 text-[0.98rem] leading-relaxed text-ink-soft">
-                  {p.body}
-                </p>
-              </div>
-            ))}
-          </StaggerGroup>
+          <WhyPoints points={whyPoints} />
         </Container>
       </section>
+      <div className="bg-forest-950">
+        <CurveDivider fill="var(--color-bone)" />
+      </div>
 
-      {/* -------------------------------------------------------------- SEASON */}
-      <section className="bg-forest-950 py-20 text-white sm:py-24">
+      {/* ============================================================== DAY */}
+      <section className="bg-bone py-20 sm:py-24">
         <Container>
           <Reveal>
             <SectionHeading
-              tone="dark"
               eyebrow="A Spokane year"
               title="What we are doing, and when"
               lede="Landscaping here is seasonal work with narrow windows. Miss the overseeding window or the blow-out window and it costs you — either a thin lawn next spring or a split irrigation line."
             />
           </Reveal>
-
-          <StaggerGroup
-            as="div"
-            itemAs="div"
-            className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
-            stagger={90}
-          >
-            {seasons.map((s) => (
-              <div
-                key={s.season}
-                className="flex h-full flex-col border border-white/15 bg-white/[0.04] p-6 transition-colors duration-300 hover:bg-white/[0.07] focus-within:bg-white/[0.07]"
-              >
-                <h3 className="text-[1.3rem] text-white">{s.season}</h3>
-                <p className="mt-1 text-[0.78rem] font-bold uppercase tracking-[0.12em] text-gold-400">
-                  {s.window}
-                </p>
-                <ul className="mt-5 flex-1 space-y-2.5 text-[0.92rem] leading-snug text-sage-200">
-                  {s.items.map((i) => (
-                    <li key={i} className="flex gap-2.5">
-                      <span
-                        aria-hidden="true"
-                        className="mt-1.5 size-1.5 shrink-0 rotate-45 bg-sage-500"
-                      />
-                      {i}
-                    </li>
-                  ))}
-                </ul>
-                <div className="relative mt-5 flex flex-wrap gap-x-3 gap-y-1 pt-4">
-                  <span
-                    aria-hidden="true"
-                    className="reveal-rule-x absolute inset-x-0 top-0 h-px bg-white/12"
-                  />
-                  {s.slugs.map((slug) => {
-                    const svc = services.find((x) => x.slug === slug)!;
-                    return (
-                      <Link
-                        key={slug}
-                        href={`/services/${slug}`}
-                        className="text-[0.8rem] font-semibold text-gold-400 underline-offset-4 transition-colors duration-150 hover:text-gold-200 hover:underline focus-visible:text-gold-200 focus-visible:underline"
-                      >
-                        {svc.name}
-                      </Link>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-          </StaggerGroup>
+          <SeasonRibbon seasons={seasonPanels} />
         </Container>
       </section>
+      <div className="bg-bone">
+        <CurveDivider fill="var(--color-forest-950)" flip ornament />
+      </div>
 
-      {/* ------------------------------------------------------------- REVIEWS */}
-      <section className="py-20 sm:py-24">
-        <Container>
+      {/* ============================================================ NIGHT */}
+      <section className="relative isolate overflow-hidden bg-forest-950 py-20 sm:py-24">
+        <div aria-hidden="true" className="starfield opacity-60" />
+        <Container className="relative">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <Reveal>
               <SectionHeading
+                tone="dark"
                 eyebrow="What people say"
                 title={`${reputation.rating} stars, ${reputation.reviewCount} reviews`}
                 lede="Real reviews from Google, Nextdoor and customers who wrote to us directly. Nothing here is written by us."
               />
             </Reveal>
             <Reveal delay={80} className="flex flex-col items-start gap-3">
-              <RatingBadge showLink={false} />
-              <ButtonLink href="/reviews" variant="ghost">
+              <RatingBadge tone="dark" showLink={false} />
+              <ButtonLink href="/reviews" variant="onDark">
                 All reviews
               </ButtonLink>
             </Reveal>
           </div>
 
-          <StaggerGroup
-            as="ul"
-            itemAs="li"
-            className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3"
-            stagger={70}
-            baseDelay={100}
-          >
-            {reviews.map((r) => (
-              <ReviewCard key={r.author} review={r} />
-            ))}
-          </StaggerGroup>
+          <div className="mt-14">
+            <ReviewsShowcase reviews={reviews} />
+          </div>
         </Container>
       </section>
+      <div className="bg-forest-950">
+        <CurveDivider fill="var(--color-sage-50)" />
+      </div>
 
-      {/* -------------------------------------------------------- SERVICE AREA */}
+      {/* ============================================================== DAY */}
       <section className="bg-sage-50 py-20 sm:py-24">
         <Container>
           <Reveal>
@@ -586,28 +407,39 @@ export default function HomePage() {
               <Link
                 key={loc.slug}
                 href={`/service-areas/${loc.slug}`}
-                className="group flex h-full flex-col overflow-hidden border border-sage-200 bg-white transition-shadow hover:shadow-lift focus-visible:shadow-lift"
+                className="hairline lift group relative flex h-full flex-col overflow-hidden rounded-xs bg-forest-950"
               >
-                <ImageReveal className="aspect-16/10 bg-sage-100">
+                <ImageReveal className="aspect-16/10 bg-forest-900">
                   <Image
                     src={loc.image.src}
                     alt={loc.image.alt}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     loading="lazy"
-                    className="object-cover transition-transform duration-500 group-hover:scale-[1.025] group-focus-visible:scale-[1.025]"
+                    className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06] group-focus-visible:scale-[1.06]"
                   />
                 </ImageReveal>
-                <div className="flex flex-1 flex-col p-6">
-                  <h3 className="text-[1.25rem] text-ink">{loc.cityState}</h3>
-                  <p className="mt-2 flex-1 text-[0.92rem] leading-relaxed text-ink-soft">
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-x-0 top-0 aspect-16/10 bg-gradient-to-t from-forest-950 via-forest-950/20 to-transparent"
+                />
+                <span
+                  className="glass absolute left-4 top-4 px-3 py-1 text-[0.72rem] font-bold uppercase tracking-[0.12em] text-white"
+                  style={{ borderRadius: "var(--radius-pill)" }}
+                >
+                  {loc.city}
+                </span>
+
+                <div className="relative flex flex-1 flex-col p-6">
+                  <h3 className="display-3 text-white">{loc.cityState}</h3>
+                  <p className="mt-2 flex-1 text-[0.92rem] leading-relaxed text-sage-200">
                     {loc.localNotes[0].heading}.
                   </p>
-                  <span className="mt-4 inline-flex items-center gap-1.5 text-[0.85rem] font-bold uppercase tracking-[0.08em] text-forest-700 transition-colors group-hover:text-forest-500 group-focus-visible:text-forest-500">
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-[0.85rem] font-bold uppercase tracking-[0.08em] text-gold-400">
                     What we do here
                     <span
                       aria-hidden="true"
-                      className="transition-transform duration-200 group-hover:translate-x-1 group-focus-visible:translate-x-1"
+                      className="transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1.5 group-focus-visible:translate-x-1.5"
                     >
                       →
                     </span>
@@ -619,8 +451,7 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* ------------------------------------------------------------- PROCESS */}
-      <section className="py-20 sm:py-24">
+      <section className="bg-bone py-20 sm:py-24">
         <Container>
           <Reveal>
             <SectionHeading
@@ -632,8 +463,7 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* ----------------------------------------------------------------- FAQ */}
-      <section className="border-t border-sage-200 py-20 sm:py-24">
+      <section className="bg-sage-50 py-20 sm:py-24">
         <Container>
           <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
             <SectionHeading
@@ -657,7 +487,11 @@ export default function HomePage() {
           </div>
         </Container>
       </section>
+      <div className="bg-sage-50">
+        <CurveDivider fill="var(--color-forest-950)" flip ornament />
+      </div>
 
+      {/* ============================================================ NIGHT */}
       <CtaBand location="home_footer" />
     </>
   );

@@ -635,11 +635,15 @@ export const services: Service[] = [
         "Spring clean-up is about getting sand, gravel and winter debris off the lawn and opening the beds up before the first growth push in April. Doing it before things leaf out is much faster — and cheaper — than doing it after.",
       ],
     },
+    /* Was mulch-island-bed.jpg, which is only 500x375 — visibly soft in the
+       homepage ribbon, where a panel can open to roughly 45vw, and shot on a
+       grey day over a dormant lawn. side-yard-after.jpg is the same job done
+       well at 1600x1200: cleared bed, fresh mulch, cut edge, in sunlight. */
     image: {
-      src: "/images/projects/mulch-island-bed.jpg",
-      alt: "A cleared and freshly mulched island bed in a Spokane front yard after a seasonal clean-up",
-      width: 500,
-      height: 375,
+      src: "/images/projects/side-yard-after.jpg",
+      alt: "A Spokane side yard after a seasonal clean-up by Supernova Landscape — the bed cleared, freshly mulched and edged against a cut lawn",
+      width: 1600,
+      height: 1200,
     },
     faqs: [
       {

@@ -27,11 +27,10 @@ export function SectionHeading({
       {eyebrow && (
         <p className={`eyebrow ${dark ? "eyebrow-light" : ""}`}>{eyebrow}</p>
       )}
-      <As
-        className={`mt-3 text-[1.9rem] leading-[1.12] sm:text-[2.35rem] ${
-          dark ? "text-white" : "text-ink"
-        }`}
-      >
+      {/* `display-2` is the one H2 scale used site-wide (globals.css). All 24
+          call sites take the default `h2`, so the scale lives here rather
+          than being repeated per page. */}
+      <As className={`display-2 mt-3.5 ${dark ? "text-white" : "text-ink"}`}>
         {title}
       </As>
       {lede && (

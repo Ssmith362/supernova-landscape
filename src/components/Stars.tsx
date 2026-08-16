@@ -7,10 +7,17 @@ export function Stars({
   rating,
   size = 18,
   className = "",
+  sequential = false,
 }: {
   rating: number;
   size?: number;
   className?: string;
+  /**
+   * Fills the stars one at a time on arrival instead of showing them filled.
+   * Used once, in the hero's rating chip. The animation's end state is this
+   * component's normal output, so it degrades to the static row.
+   */
+  sequential?: boolean;
 }) {
   const pct = Math.max(0, Math.min(100, (rating / 5) * 100));
 
@@ -27,7 +34,9 @@ export function Stars({
         ))}
       </span>
       <span
-        className="absolute inset-0 flex gap-0.5 overflow-hidden"
+        className={`absolute inset-0 flex gap-0.5 overflow-hidden ${
+          sequential ? "stars-fill" : ""
+        }`}
         aria-hidden="true"
         style={{ width: `${pct}%` }}
       >

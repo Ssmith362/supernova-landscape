@@ -43,8 +43,24 @@
 
   --shadow-card: 0 1px 2px rgb(11 23 16 / 0.05), 0 8px 24px -12px rgb(11 23 16 / 0.18);
   --shadow-lift: 0 2px 4px rgb(11 23 16 / 0.06), 0 18px 40px -18px rgb(11 23 16 / 0.28);
+  /* The ember bloom. Used only behind the primary CTA and the closing
+     supernova moment — never as a general-purpose glow. */
+  --shadow-ember: 0 0 0 1px rgb(224 160 42 / 0.35), 0 8px 30px -8px rgb(224 160 42 / 0.45);
 
-  --radius-card: 4px;
+  /* ------------------------------------------------------------------ Radius
+     ONE radius, site-wide, for every card, button, image frame and chip.
+     It is defined on `--radius-xs` (not just `--radius-card`) deliberately:
+     `rounded-xs` is the class all 33 existing radius call sites already use,
+     so redefining that one token restyles every surface on all 35 routes
+     from here, with no per-component churn. `--radius-card` is kept as its
+     semantic alias for new components that want to name the intent. */
+  --radius-xs: 12px;
+  --radius-card: 12px;
+  /* Two documented exceptions, both for shapes where the card radius would
+     read as "almost square" at their size: pills (season tabs, source chips)
+     and the few large masked panels (the hero photo, feature tiles). */
+  --radius-pill: 999px;
+  --radius-panel: 28px;
 }
 
 @layer base {
@@ -106,18 +122,126 @@
 }
 
 @layer components {
-  /* Editorial eyebrow used above section headings. */
+  /* --------------------------------------------------------------- Eyebrow
+     Small-caps letterspaced label carrying the brand's 4-point star marker.
+     The star is drawn by `::before` rather than added to markup at all 51
+     call sites, so every existing eyebrow across the site picks it up with
+     no per-page edits — and it stays out of the accessibility tree, which a
+     decorative glyph should. */
   .eyebrow {
     font-family: var(--font-sans);
     font-size: 0.75rem;
     font-weight: 700;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--color-forest-600);
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+  }
+  /* The label takes the section's colour; the star is always ember — star
+     markers are one of the four places the accent is permitted. */
+  .eyebrow::before {
+    content: "";
+    flex: none;
+    width: 0.75em;
+    height: 0.75em;
+    background: var(--color-gold-500);
+    /* The 4-point star: a square with concave sides. One shape, reused as
+       the eyebrow marker, list bullet and divider ornament. */
+    clip-path: polygon(
+      50% 0%,
+      61% 39%,
+      100% 50%,
+      61% 61%,
+      50% 100%,
+      39% 61%,
+      0% 50%,
+      39% 39%
+    );
   }
 
   .eyebrow-light {
     color: var(--color-sage-300);
+  }
+  .eyebrow-light::before {
+    background: var(--color-gold-400);
+  }
+
+  /* ------------------------------------------------------------ Display type
+     The site's whole headline voice, in three sizes.
+
+     AXIS NOTE — verified by measuring rendered text width against each axis
+     in a browser, not assumed: the latin subset in src/fonts retains only
+     `opsz` and `wght`. Fraunces' `SOFT` and `WONK` axes did NOT survive
+     subsetting (setting them changes nothing, exactly like a bogus axis
+     name), so they are deliberately not declared here — a dead declaration
+     that silently does nothing is worse than none. Restoring WONK, which is
+     what gives Fraunces its real quirk, would mean re-subsetting the font.
+
+     On `opsz`: higher = the display cut (tighter, higher contrast, sharper
+     serifs); lower = the text cut (wider, sturdier). The subset's default
+     instance is already 144, so the values below matter most at `.display-3`,
+     where the previous design was rendering small headings in the display
+     cut and getting brittle, over-tight sub-headings as a result. */
+  /* The hero headline. Sized for the actual copy, not for a size record: at
+     55 characters, anything above ~4.25rem wrapped to five or six lines and
+     pushed the CTAs off the first screen entirely. */
+  .display-1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 4.6vw, 4.25rem);
+    line-height: 1.02;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    font-variation-settings: "opsz" 144;
+    text-wrap: balance;
+  }
+  /* Interior page H1 (PageHeader). Sits deliberately between `.display-1` and
+     `.display-2`: the homepage hero is the only H1 allowed to go full size,
+     but every interior H1 must still outrank the `.display-2` section
+     headings below it on the same page. */
+  .display-page {
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 4.4vw, 3.9rem);
+    line-height: 1.03;
+    font-weight: 600;
+    letter-spacing: -0.023em;
+    font-variation-settings: "opsz" 132;
+    text-wrap: balance;
+  }
+  .display-2 {
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 4.6vw, 3.6rem);
+    line-height: 1.04;
+    font-weight: 600;
+    letter-spacing: -0.022em;
+    font-variation-settings: "opsz" 120;
+    text-wrap: balance;
+  }
+  .display-3 {
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2vw, 1.6rem);
+    line-height: 1.18;
+    font-weight: 600;
+    letter-spacing: -0.014em;
+    font-variation-settings: "opsz" 36;
+  }
+
+  /* Giant outlined numeral — the 01-04 blocks and the process steps. Falls
+     back to a solid ember numeral where `text-stroke` is unsupported. */
+  .numeral {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 0.8;
+    letter-spacing: -0.04em;
+    font-variation-settings: "opsz" 144;
+    color: var(--color-gold-500);
+  }
+  @supports (-webkit-text-stroke: 1px black) {
+    .numeral-outline {
+      -webkit-text-stroke: 1.5px currentColor;
+      color: transparent;
+    }
   }
 
   /* Long-form copy blocks on service, location and guide pages. */
@@ -182,6 +306,73 @@
   .prose-supernova ol > li + li {
     margin-top: 0.6rem;
   }
+
+  /* --------------------------------------------------------------- Surfaces
+     ONE border treatment site-wide: a 1px hairline that warms to ember on
+     hover or keyboard focus. Two tones only because the page alternates
+     between the light and night registers — the behaviour is identical. */
+  .hairline,
+  .hairline-dark {
+    border: 1px solid;
+    transition:
+      border-color 300ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 300ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .hairline {
+    border-color: color-mix(in srgb, var(--color-sage-500) 38%, transparent);
+  }
+  .hairline-dark {
+    border-color: rgb(255 255 255 / 0.14);
+  }
+  .hairline:hover,
+  .hairline:focus-within,
+  .hairline-dark:hover,
+  .hairline-dark:focus-within {
+    border-color: color-mix(in srgb, var(--color-gold-500) 65%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-gold-500) 18%, transparent);
+  }
+  /* The shared hover language: hairline warms, surface lifts. */
+  .lift:hover,
+  .lift:focus-within {
+    transform: translateY(-3px);
+  }
+
+  /* Glass chip — the floating proof chip, caption chips and season pills. */
+  .glass {
+    background: rgb(4 21 12 / 0.55);
+    border: 1px solid rgb(255 255 255 / 0.18);
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+  }
+
+  /* ------------------------------------------------------------ Shiny sweep
+     A single specular pass across a button on hover/focus. At rest and at
+     the end of the sweep the highlight sits fully off the button, so when
+     the global reduced-motion rule collapses the transition to ~0ms the
+     effect simply never becomes visible — no flash, no jump. */
+  .shiny {
+    position: relative;
+    overflow: hidden;
+  }
+  .shiny::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      100deg,
+      transparent 30%,
+      rgb(255 255 255 / 0.42) 50%,
+      transparent 70%
+    );
+    transform: translateX(-130%);
+    transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .shiny:hover::after,
+  .shiny:focus-visible::after {
+    transform: translateX(130%);
+  }
 }
 
 @layer utilities {
@@ -237,8 +428,42 @@
   }
 }
 
+/* ON-LOAD REVEALS — a transition out of `@starting-style`, not
+ * `@keyframes … both`.
+ *
+ * Both express the same entrance. The difference is which state the CASCADE
+ * treats as the resting one. With `fill-mode: both` the hidden frame is what
+ * the element resolves to until the animation runs; here the fully-visible
+ * state is the declared value and the hidden one exists only as a starting
+ * frame to transition away from. Verified by disabling transitions outright:
+ * all 8 hero words, all 6 on-load reveals, the rating fill and the underline
+ * stroke each snap to their correct, fully-visible values.
+ *
+ * That buys graceful degradation in the cases that actually occur: a browser
+ * without `@starting-style` support ignores the rule and paints the content
+ * immediately, and any stylesheet or extension that suppresses transitions
+ * leaves everything visible rather than blank. It matters most here because
+ * this covers the LCP headline.
+ *
+ * What it does NOT do — and the keyframe version was no better — is survive
+ * a frozen document timeline: a transition that has started but cannot
+ * advance still sits on its first frame. That state only exists while a page
+ * is not being presented at all (a hidden tab), so nobody is looking at it;
+ * the timeline advances as soon as the page is shown.
+ *
+ * Callers pass `transitionDelay` (not `animationDelay`) to stagger these. */
 .reveal-on-load {
-  animation: reveal-up 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 620ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@starting-style {
+  .reveal-on-load {
+    opacity: 0;
+    transform: translateY(16px);
+  }
 }
 
 /* Nav-link underline: grows from the left on hover/focus/current page. */
@@ -267,8 +492,10 @@
 .site-header {
   transition: box-shadow 220ms ease, border-color 220ms ease;
 }
+/* Tuned for the dark bar: a light-theme shadow was invisible against it, so
+   the only cue that the page had scrolled was gone. */
 .site-header[data-scrolled="true"] {
-  box-shadow: 0 1px 2px rgb(11 23 16 / 0.04), 0 10px 24px -16px rgb(11 23 16 / 0.22);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.06), 0 14px 34px -18px rgb(0 0 0 / 0.85);
 }
 
 /* Mobile menu: links stage in with a short left-to-right stagger, driven by
@@ -456,4 +683,399 @@
 }
 .handle-pulse {
   animation: handle-pulse 1100ms cubic-bezier(0.22, 1, 0.36, 1) 2;
+}
+
+/* ==========================================================================
+   Brand motion — starfield, ember bloom, hero text staging
+   ==========================================================================
+   Everything below is CSS-only and covered by the blanket
+   `prefers-reduced-motion` rule at the top of this file, which collapses
+   every duration to ~0. Each effect is authored so that collapsing it lands
+   on a correct, fully-visible resting state rather than a frozen mid-frame.
+   ========================================================================== */
+
+/* ------------------------------------------------------------------ Starfield
+   The night register's signature texture. Two tiled layers of radial-gradient
+   dots drifting at different speeds — no canvas, no JS, no per-star DOM node.
+   Both layers are promoted to their own compositor layer and animate only
+   `transform`, so the whole effect costs one GPU composite per frame.
+   Deliberately faint: this is a landscaping company with a night-sky
+   signature, not a space theme. */
+.starfield {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.starfield::before,
+.starfield::after {
+  content: "";
+  position: absolute;
+  /* Oversized so the drift never exposes an untiled edge. */
+  inset: -25%;
+  background-repeat: repeat;
+  will-change: transform;
+}
+/* Far layer — smaller, fainter, slower. */
+.starfield::before {
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, rgb(255 255 255 / 0.55), transparent),
+    radial-gradient(1px 1px at 34% 62%, rgb(255 255 255 / 0.4), transparent),
+    radial-gradient(1px 1px at 58% 27%, rgb(255 255 255 / 0.5), transparent),
+    radial-gradient(1px 1px at 77% 71%, rgb(255 255 255 / 0.35), transparent),
+    radial-gradient(1px 1px at 89% 41%, rgb(255 255 255 / 0.45), transparent),
+    radial-gradient(1px 1px at 22% 86%, rgb(255 255 255 / 0.3), transparent),
+    radial-gradient(1px 1px at 66% 92%, rgb(255 255 255 / 0.4), transparent),
+    radial-gradient(1px 1px at 45% 8%, rgb(255 255 255 / 0.35), transparent);
+  background-size: 340px 340px;
+  animation: star-drift-a 150s linear infinite;
+}
+/* Near layer — a few larger stars, one of them ember. */
+.starfield::after {
+  background-image:
+    radial-gradient(1.6px 1.6px at 18% 44%, rgb(255 255 255 / 0.7), transparent),
+    radial-gradient(1.6px 1.6px at 71% 15%, rgb(255 255 255 / 0.6), transparent),
+    radial-gradient(1.6px 1.6px at 40% 78%, rgb(240 185 73 / 0.65), transparent),
+    radial-gradient(1.4px 1.4px at 92% 63%, rgb(255 255 255 / 0.55), transparent),
+    radial-gradient(1.4px 1.4px at 6% 70%, rgb(255 255 255 / 0.5), transparent);
+  background-size: 560px 560px;
+  animation: star-drift-b 110s linear infinite;
+}
+@keyframes star-drift-a {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-340px, 170px, 0);
+  }
+}
+@keyframes star-drift-b {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(280px, -180px, 0);
+  }
+}
+
+/* --------------------------------------------------------------- Ember bloom
+   The slow breathing glow behind the primary CTA and the closing headline.
+   Animates opacity/transform on a dedicated decorative element, never on the
+   button itself, so it can never interfere with the button's own hover lift. */
+@keyframes ember-breathe {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.06);
+  }
+}
+.ember-bloom {
+  animation: ember-breathe 5.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+/* ------------------------------------------------------- Hero word staging
+   The H1 reveals word by word. Each word is its own inline-block span with an
+   inline `animation-delay`, wrapped in an overflow-hidden line box so words
+   rise out of the line rather than fading in place. Pure CSS `@keyframes`
+   with `both` fill, matching `.reveal-on-load`'s contract: it plays on
+   arrival, needs no observer, and always ends fully visible even if React
+   never hydrates. */
+.word-rise {
+  display: inline-block;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 720ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 720ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@starting-style {
+  .word-rise {
+    opacity: 0;
+    transform: translateY(0.9em);
+  }
+}
+
+
+/* ========================================================== Hero grade
+   The two-axis scrim that lets the headline sit INSIDE the hero photograph
+   instead of in a block above it.
+
+   Two gradients, not one, because they solve different problems. The X grade
+   is directional: heavy at the left gutter where the type lives, clearing by
+   the right third so the actual subject of the photo (the barn, the finished
+   install) is never muddied. The Y grade seats the composition — dark under
+   the floating header so nav links stay legible against any slide, dark again
+   at the foot so the service rail reads as part of the frame rather than a
+   bar laid on top of it.
+
+   Both are authored here rather than as Tailwind arbitrary values because
+   the stop positions were tuned against all four slide photographs, and that
+   tuning deserves to be readable and editable in one place. */
+.hero-grade-x {
+  background: linear-gradient(
+    100deg,
+    rgb(4 21 12 / 0.94) 0%,
+    rgb(4 21 12 / 0.82) 34%,
+    rgb(4 21 12 / 0.42) 58%,
+    rgb(4 21 12 / 0.12) 82%
+  );
+}
+.hero-grade-y {
+  background: linear-gradient(
+    180deg,
+    rgb(4 21 12 / 0.9) 0%,
+    rgb(4 21 12 / 0.15) 26%,
+    rgb(4 21 12 / 0.1) 52%,
+    rgb(4 21 12 / 0.88) 100%
+  );
+}
+
+/* --------------------------------------------------- Hero service rail
+   The four featured services along the hero's foot. The photograph behind
+   the headline changes with the active item; the headline, lede and CTAs
+   never do.
+
+   ON THE PROGRESS BAR — this is an `animation`, not a `transition`, for one
+   specific reason: `animation-play-state: paused` freezes it exactly where it
+   stands and resumes from that point, which is what pausing on hover has to
+   feel like. A width transition can only be frozen by reading the computed
+   value back and reassigning it, which drops a frame and drifts out of sync
+   with the JS timer. The timer tracks the same wall-clock remainder, so bar
+   and timer resume together.
+
+   The blanket `prefers-reduced-motion` rule at the top of this file collapses
+   the duration to ~0, so the bar simply sits full and the rail becomes a
+   static set of links — which is why HeroStage also refuses to start its
+   timer under that query. Belt and braces, deliberately: the CSS alone would
+   otherwise leave a 7-second timer silently re-rendering behind a bar that
+   never appears to move. */
+@keyframes hero-rail-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.hero-rail-prog {
+  transform: scaleX(0);
+  transform-origin: left;
+}
+[data-hero-rail-active="true"] .hero-rail-prog {
+  animation: hero-rail-fill var(--hero-dwell, 7000ms) linear forwards;
+}
+[data-hero-rail-paused="true"] .hero-rail-prog {
+  animation-play-state: paused;
+}
+
+/* Rail track. Two columns on phones regardless of how many services are on
+   the rail, one column each from `lg` up. HeroStage hands the service count
+   in as `--rail-cols-lg`, so the rail follows its data instead of a
+   hard-coded number.
+
+   With an odd number of services the last item would be left orphaned in a
+   half-width cell on mobile, so it spans the full row instead. */
+.hero-rail {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.hero-rail[data-odd="true"] > :last-child {
+  grid-column: span 2;
+}
+@media (min-width: 64rem) {
+  .hero-rail {
+    grid-template-columns: repeat(var(--rail-cols-lg, 4), minmax(0, 1fr));
+  }
+  .hero-rail[data-odd="true"] > :last-child {
+    grid-column: auto;
+  }
+}
+
+/* Slide crossfade. Only opacity animates, so the whole swap is one composite
+   per frame on top of the ken-burns transform already running. */
+.hero-slide {
+  opacity: 0;
+  transition: opacity 1100ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hero-slide[data-on="true"] {
+  opacity: 1;
+}
+
+/* ======================================================= Services reel
+   The horizontal filmstrip on "What we do".
+
+   ON THE INSET — the track is full-bleed so cards can scroll out to the
+   screen edge, which is what tells you there is more to the right. But its
+   first card still has to line up with the page gutter, or the section reads
+   as misaligned against every other block on the page. So the horizontal
+   padding is "whatever the Container's left edge resolves to at this
+   viewport": the gutter itself on narrow screens, and the centring offset
+   plus the gutter once the 72rem Container stops growing.
+
+   `scroll-padding-inline` repeats the value so snap points land on that same
+   line rather than hard against the viewport edge — without it, snapping
+   yanks the first card out of alignment with the heading above it. */
+.reel-track {
+  --reel-inset: max(1.25rem, calc((100vw - 72rem) / 2 + 1.25rem));
+  padding-inline: var(--reel-inset);
+  scroll-padding-inline: var(--reel-inset);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-sage-300) transparent;
+  /* Momentum scrolling on iOS, and snap that a drag can switch off. */
+  -webkit-overflow-scrolling: touch;
+}
+@media (min-width: 40rem) {
+  .reel-track {
+    --reel-inset: max(2rem, calc((100vw - 72rem) / 2 + 2rem));
+  }
+}
+.reel-track::-webkit-scrollbar {
+  height: 6px;
+}
+.reel-track::-webkit-scrollbar-thumb {
+  background: var(--color-sage-300);
+  border-radius: 999px;
+}
+.reel-track::-webkit-scrollbar-track {
+  background: transparent;
+}
+/* Dragging suspends snap, otherwise the track fights the pointer all the way
+   across and never comes to rest where it was released. */
+.reel-track[data-dragging="true"] {
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+  cursor: grabbing;
+}
+
+/* ------------------------------------------------------------ Scroll cue
+   A short line that drifts down the hero's bottom edge. Decorative only. */
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(-60%) scaleY(0.4);
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(60%) scaleY(1);
+    opacity: 0;
+  }
+}
+.scroll-cue {
+  animation: scroll-cue 2.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+/* ------------------------------------------------------- Sequential stars
+   The hero's rating chip fills its five stars one at a time rather than
+   sweeping smoothly. `steps(5)` is what makes it discrete — the clip
+   overlay's width jumps in five equal increments, so each jump uncovers
+   exactly one star. The end state is the same clipped width the static
+   component renders, so a collapsed reduced-motion duration lands on the
+   correct 4.9-star fill rather than an empty or full row. */
+.stars-fill {
+  transition: width 900ms steps(5, end) 260ms;
+}
+@starting-style {
+  .stars-fill {
+    width: 0%;
+  }
+}
+
+/* ------------------------------------------------------------ Nav underline
+   Hover/focus affordance for nav items that are NOT the current page. The
+   active item's underline is the shared `layoutId` element that slides
+   between items (see SiteHeader), so this one deliberately stops at the
+   active item to avoid two underlines under the same link. */
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.3rem;
+  height: 1.5px;
+  background: currentColor;
+  opacity: 0.55;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  transform: scaleX(1);
+}
+.nav-link[aria-current="page"]::after {
+  display: none;
+}
+
+/* ------------------------------------------------------------- Ken Burns
+   Very slow scale+pan on the hero photo. Only `transform` animates, and the
+   scale never drops below 1, so the panel is never under-filled. */
+@keyframes ken-burns {
+  0% {
+    transform: scale(1.06) translate3d(0, 0, 0);
+  }
+  100% {
+    transform: scale(1.14) translate3d(-1.2%, -1.4%, 0);
+  }
+}
+.ken-burns {
+  animation: ken-burns 26s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+
+/* The `.spotlight` rule lived here — the ember highlight that tracked the
+   cursor across a bento tile, driven by SpotlightCard. Both are gone: the
+   services bento it existed for was replaced by the filmstrip reel, which
+   leaves nothing to write --spot-x/--spot-y, so the rule could only ever
+   have rendered at its invisible default. */
+
+/* ------------------------------------------------------- Marquee (reviews)
+   Two rows of secondary review cards drifting in opposite directions. The
+   track holds two identical copies of the list and translates exactly -50%,
+   so the loop is seamless. Pausing on hover is a courtesy for anyone trying
+   to actually read one. */
+@keyframes marquee-left {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+@keyframes marquee-right {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+.marquee-left {
+  animation: marquee-left 68s linear infinite;
+}
+.marquee-right {
+  animation: marquee-right 82s linear infinite;
+}
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+/* --------------------------------------------------------- FAQ star marker
+   The accordion's star rotates 45° when its panel opens. */
+.faq-star {
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1), color 200ms ease;
+}
+[data-open="true"] .faq-star,
+[aria-expanded="true"] .faq-star {
+  transform: rotate(45deg);
+  color: var(--color-gold-500);
 }

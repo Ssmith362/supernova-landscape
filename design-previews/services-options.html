@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Supernova — "What we do" · 5 options</title>
+<style>
+@font-face{font-family:"Fraunces";src:url("../src/fonts/Fraunces-latin.woff2") format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Archivo";src:url("../src/fonts/Archivo-latin.woff2") format("woff2");font-weight:100 900;font-display:swap}
+
+:root{
+  --ink:#0b1710; --ink-soft:#33453a; --ink-muted:#5c6b61;
+  --forest-950:#04150c; --forest-900:#052b16; --forest-800:#063b1e;
+  --forest-700:#075c2e; --forest-600:#087038; --forest-500:#0e8846; --forest-400:#35a566;
+  --sage-700:#4a6650; --sage-600:#5f7f60; --sage-500:#789878;
+  --sage-300:#a9c0a9; --sage-200:#cbdccb; --sage-100:#e3ede3; --sage-50:#f1f6f1;
+  --gold-600:#b8801a; --gold-500:#e0a02a; --gold-400:#f0b949; --gold-200:#f7dfa9;
+  --bone:#fbfaf7; --bone-dark:#f4f2ec;
+  --r-xs:12px; --r-pill:999px; --r-panel:28px;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --gutter:clamp(1.25rem,4vw,3rem);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bone);color:var(--ink);font-family:"Archivo",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;letter-spacing:-.015em;text-wrap:balance}
+a{color:inherit;text-decoration:none}
+img{display:block}
+.container{max-width:1240px;margin-inline:auto;padding-inline:var(--gutter)}
+
+.eyebrow{font-size:.75rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--forest-600);display:flex;align-items:center;gap:.6em}
+.eyebrow-light{color:var(--sage-300)}
+.star{width:.75em;height:.75em;flex:none;background:var(--gold-500);clip-path:polygon(50% 0%,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0% 50%,39% 39%)}
+.eyebrow-light .star{background:var(--gold-400)}
+.display-2{font-family:"Fraunces",serif;font-size:clamp(2rem,4vw,3.1rem);line-height:1.05;font-weight:600;letter-spacing:-.022em}
+.display-3{font-family:"Fraunces",serif;font-size:clamp(1.2rem,1.9vw,1.6rem);line-height:1.15;font-weight:600;letter-spacing:-.015em}
+.lede{margin-top:1rem;max-width:52ch;font-size:1rem;line-height:1.7;color:var(--ink-soft)}
+.sechead{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:1.5rem}
+.btn-ghost{display:inline-flex;align-items:center;gap:.5rem;min-height:3rem;padding-inline:1.25rem;border-radius:var(--r-xs);border:1px solid rgb(8 112 56 / .35);background:#fff;color:var(--forest-700);font-weight:700;font-size:.95rem;transition:all .2s var(--ease)}
+.btn-ghost:hover{border-color:var(--forest-600);background:var(--sage-50)}
+.learn{display:inline-flex;align-items:center;gap:.4rem;font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-400)}
+.scrim{position:absolute;inset:0;background:linear-gradient(to top,var(--forest-950) 0%,rgb(4 21 12 /.58) 45%,rgb(4 21 12 /.10) 100%)}
+
+/* ---------------- page chrome ---------------- */
+.topbar{position:sticky;top:0;z-index:100;background:rgba(4,21,12,.94);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.12);padding:.7rem var(--gutter);display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.topbar .lbl{color:var(--sage-300);font-size:.7rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-right:auto}
+.pills{display:flex;gap:.4rem;flex-wrap:wrap}
+.pill{padding:.5rem .95rem;border-radius:var(--r-pill);font-size:.78rem;font-weight:700;color:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.2);transition:all .2s var(--ease)}
+.pill:hover{color:var(--forest-950);background:var(--gold-400);border-color:var(--gold-400)}
+.plate{background:var(--forest-950);color:#fff;padding:2.6rem var(--gutter) 1.7rem}
+.plate .tag{display:inline-flex;align-items:center;gap:.5rem;font-size:.7rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-400)}
+.plate h2{font-size:clamp(1.5rem,2.6vw,2.05rem);margin-top:.5rem;color:#fff}
+.plate p{margin-top:.6rem;max-width:70ch;color:var(--sage-200);font-size:.95rem;line-height:1.65}
+.plate .meta{margin-top:1rem;display:flex;flex-wrap:wrap;gap:.45rem}
+.plate .meta span{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.4rem .75rem;border-radius:var(--r-pill);border:1px solid rgba(255,255,255,.2);color:var(--sage-200)}
+.plate .meta span.good{border-color:rgba(53,165,102,.5);color:#7fd3a0}
+.plate .meta span.warn{border-color:rgba(224,160,42,.5);color:var(--gold-400)}
+.sec{padding:4rem 0 5rem}
+.foot{background:var(--forest-950);color:var(--sage-300);padding:3rem var(--gutter);font-size:.85rem;text-align:center}
+
+/* =========================== 1 · BENTO MOSAIC =========================== */
+.bento{margin-top:3rem;display:grid;gap:.85rem;grid-template-columns:repeat(4,1fr);grid-auto-rows:11.5rem}
+.bento a{position:relative;overflow:hidden;border-radius:var(--r-xs);background:var(--forest-950);isolation:isolate}
+.bento img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .8s var(--ease)}
+.bento a:hover img{transform:scale(1.07)}
+.bento .body{position:absolute;inset:auto 0 0 0;padding:1.1rem 1.15rem;z-index:2}
+.bento h3{color:#fff;font-size:1rem}
+.bento .big h3{font-size:1.55rem}
+.bento p{margin-top:.4rem;font-size:.85rem;line-height:1.5;color:var(--sage-100);max-width:34ch;opacity:0;max-height:0;overflow:hidden;transition:opacity .4s var(--ease),max-height .5s var(--ease)}
+.bento a:hover p{opacity:1;max-height:6rem}
+.bento .learn{margin-top:.6rem}
+.bento .rule{position:absolute;left:0;right:0;top:0;height:2px;background:var(--gold-500);transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease);z-index:3}
+.bento a:hover .rule{transform:scaleX(1)}
+.b1{grid-column:span 2;grid-row:span 2}
+.b2{grid-column:span 1;grid-row:span 2}
+.b3{grid-column:span 1;grid-row:span 1}
+@media(max-width:900px){.bento{grid-template-columns:repeat(2,1fr);grid-auto-rows:9.5rem}.b1{grid-column:span 2}.b2{grid-column:span 1;grid-row:span 2}}
+
+/* ======================= 2 · STICKY PARALLAX STACK ====================== */
+.stackwrap{margin-top:3rem}
+.stack{position:relative}
+.stack .card{position:sticky;top:6rem;height:64vh;min-height:26rem;border-radius:var(--r-panel);overflow:hidden;margin-bottom:1.25rem;background:var(--forest-950);display:grid;grid-template-columns:1fr 1fr;box-shadow:0 30px 70px -40px rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.1)}
+.stack .card .pic{position:relative;overflow:hidden}
+.stack .card .pic img{width:100%;height:100%;object-fit:cover}
+.stack .card .txt{padding:clamp(1.5rem,3.5vw,3rem);display:flex;flex-direction:column;justify-content:center;color:#fff;position:relative}
+.stack .card .txt::before{content:"";position:absolute;left:clamp(1.5rem,3.5vw,3rem);top:clamp(1.5rem,3.5vw,3rem);width:52px;height:2px;background:var(--gold-500)}
+.stack .num{font-family:"Fraunces",serif;font-size:.9rem;color:var(--gold-400);letter-spacing:.1em;margin-bottom:.7rem}
+.stack h3{font-size:clamp(1.5rem,2.8vw,2.4rem);color:#fff}
+.stack p{margin-top:.9rem;color:var(--sage-100);font-size:1rem;line-height:1.65;max-width:38ch}
+.stack .learn{margin-top:1.5rem;color:var(--gold-400)}
+@media(max-width:820px){.stack .card{grid-template-columns:1fr;height:auto;position:relative;top:0}.stack .card .pic{height:14rem}}
+
+/* ============================ 3 · TILT CARDS ============================ */
+.tiltgrid{margin-top:3rem;display:grid;gap:1.4rem;grid-template-columns:repeat(3,1fr)}
+.tiltwrap{perspective:1100px}
+.tilt{position:relative;border-radius:var(--r-xs);overflow:hidden;aspect-ratio:4/5;transform-style:preserve-3d;transition:transform .35s var(--ease),box-shadow .35s var(--ease);will-change:transform;background:var(--forest-950);display:block}
+.tilt img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tilt .glare{position:absolute;inset:0;z-index:3;opacity:0;transition:opacity .3s;background:radial-gradient(circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.32),transparent 55%);mix-blend-mode:overlay}
+.tiltwrap:hover .tilt{box-shadow:0 30px 60px -25px rgba(4,21,12,.6)}
+.tiltwrap:hover .glare{opacity:1}
+.tilt .body{position:absolute;inset:auto 0 0 0;padding:1.2rem;z-index:2;transform:translateZ(48px)}
+.tilt h3{color:#fff;font-size:1.12rem}
+.tilt p{margin-top:.45rem;font-size:.85rem;line-height:1.5;color:var(--sage-100)}
+.tilt .learn{margin-top:.7rem}
+@media(max-width:980px){.tiltgrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.tiltgrid{grid-template-columns:1fr}}
+
+/* ============================= 4 · FILMSTRIP =========================== */
+.reelhead{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:2.5rem}
+.reelnav{display:flex;gap:.5rem}
+.reelnav button{width:3rem;height:3rem;border-radius:var(--r-pill);border:1px solid rgb(8 112 56 /.3);background:#fff;color:var(--forest-700);font-size:1.1rem;cursor:pointer;transition:all .2s var(--ease)}
+.reelnav button:hover{background:var(--forest-600);color:#fff;border-color:var(--forest-600)}
+.reel{margin-top:1.2rem;display:flex;gap:1rem;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:1.2rem;scrollbar-width:thin;cursor:grab}
+.reel.drag{cursor:grabbing;scroll-snap-type:none}
+.reel::-webkit-scrollbar{height:6px}
+.reel::-webkit-scrollbar-thumb{background:var(--sage-300);border-radius:99px}
+.reel .poster{position:relative;flex:0 0 clamp(15rem,24vw,20rem);aspect-ratio:3/4.4;border-radius:var(--r-xs);overflow:hidden;scroll-snap-align:start;background:var(--forest-950);isolation:isolate}
+.reel .poster img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .8s var(--ease)}
+.reel .poster:hover img{transform:scale(1.06)}
+.reel .idx{position:absolute;top:1rem;left:1rem;z-index:3;font-family:"Fraunces",serif;font-size:.8rem;font-weight:600;color:var(--forest-950);background:var(--gold-400);border-radius:var(--r-pill);padding:.25rem .7rem}
+.reel .body{position:absolute;inset:auto 0 0 0;padding:1.2rem;z-index:2}
+.reel h3{color:#fff;font-size:1.15rem}
+.reel p{margin-top:.45rem;font-size:.84rem;line-height:1.5;color:var(--sage-100)}
+.reel .learn{margin-top:.7rem}
+
+/* ========================== 5 · FOCUS SPOTLIGHT ========================= */
+.focusgrid{margin-top:3rem;display:grid;gap:1rem;grid-template-columns:repeat(3,1fr)}
+.focusgrid a{position:relative;overflow:hidden;border-radius:var(--r-xs);aspect-ratio:4/3;background:var(--forest-950);isolation:isolate;transition:filter .45s var(--ease),transform .45s var(--ease),opacity .45s var(--ease)}
+.focusgrid img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .8s var(--ease)}
+.focusgrid.hot a:not(:hover){filter:blur(4px) grayscale(.5) brightness(.55);transform:scale(.97);opacity:.7}
+.focusgrid a:hover{transform:scale(1.03);z-index:5;box-shadow:0 30px 60px -25px rgba(4,21,12,.55)}
+.focusgrid a:hover img{transform:scale(1.08)}
+.focusgrid .body{position:absolute;inset:auto 0 0 0;padding:1.15rem;z-index:2}
+.focusgrid h3{color:#fff;font-size:1.08rem}
+.focusgrid p{margin-top:.4rem;font-size:.84rem;line-height:1.5;color:var(--sage-100);opacity:0;transform:translateY(6px);transition:.4s var(--ease)}
+.focusgrid a:hover p{opacity:1;transform:none}
+.focusgrid .learn{margin-top:.6rem;opacity:0;transition:.4s var(--ease) .05s}
+.focusgrid a:hover .learn{opacity:1}
+@media(max-width:980px){.focusgrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.focusgrid{grid-template-columns:1fr}.focusgrid.hot a:not(:hover){filter:none;transform:none;opacity:1}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="lbl">Supernova · "What we do" · 5 options</span>
+  <nav class="pills">
+    <a class="pill" href="#o1">1 · Bento mosaic</a>
+    <a class="pill" href="#o2">2 · Sticky stack</a>
+    <a class="pill" href="#o3">3 · 3D tilt</a>
+    <a class="pill" href="#o4">4 · Filmstrip</a>
+    <a class="pill" href="#o5">5 · Focus spotlight</a>
+  </nav>
+</div>
+
+<!-- ============================================================ 1 -->
+<section class="plate" id="o1">
+  <span class="tag">Option 1 · ScrollX <em>Bento Grid</em></span>
+  <h2>Bento mosaic</h2>
+  <p>An asymmetric photographic grid where tile size encodes commercial value — Lawn Maintenance takes a 2×2, Landscape Installs a tall 1×2, and the rest fill in around them. Summaries stay collapsed until hover, so the grid reads as pure photography at rest and becomes readable on demand. Closest to what you have now, but all nine tiles are photographic and the two-block split is gone.</p>
+  <div class="meta"><span class="good">Densest — all 9 visible at once</span><span class="good">Hierarchy built in</span><span class="good">No scroll cost</span><span class="warn">Least novel of the five</span></div>
+</section>
+<section class="sec" style="background:var(--bone)"><div class="container">
+  <div class="sechead">
+    <div>
+      <p class="eyebrow"><i class="star"></i> What we do</p>
+      <h2 class="display-2" style="margin-top:.8rem">Nine services, nine places to start</h2>
+      <p class="lede">Everything below has its own page with real detail — what is included, what it costs you to skip it, and when in a Spokane year it should happen.</p>
+    </div>
+    <a class="btn-ghost">All services</a>
+  </div>
+  <div class="bento" id="bento"></div>
+</div></section>
+
+<!-- ============================================================ 2 -->
+<section class="plate" id="o2">
+  <span class="tag">Option 2 · ScrollX <em>Parallax Cards</em></span>
+  <h2>Sticky parallax stack</h2>
+  <p>Each service is a full split card — photograph one side, copy the other — that pins to the viewport and is overtaken by the next as you scroll. Every service gets a full screen of attention and its summary is always readable. The trade is length: nine cards is a long scroll, so this works best trimmed to the five featured services with the other four as a footer row.</p>
+  <div class="meta"><span class="good">Most cinematic</span><span class="good">Every summary fully readable</span><span class="warn">~9 screens of scroll</span><span class="warn">Buries the sections below</span></div>
+</section>
+<section class="sec" style="background:var(--bone)"><div class="container">
+  <p class="eyebrow"><i class="star"></i> What we do</p>
+  <h2 class="display-2" style="margin-top:.8rem">Nine services, nine places to start</h2>
+  <div class="stackwrap"><div class="stack" id="stack"></div></div>
+</div></section>
+
+<!-- ============================================================ 3 -->
+<section class="plate" id="o3">
+  <span class="tag">Option 3 · ScrollX <em>Card Tilt</em></span>
+  <h2>3D tilt cards</h2>
+  <p>A uniform 3×3 grid where each card tracks the cursor in three dimensions — the card rotates toward you, a specular glare follows the pointer across the photograph, and the caption sits forward of the image on its own Z plane so it visibly floats. The most physically tactile of the five, and the most "expensive-feeling" per square inch.</p>
+  <div class="meta"><span class="good">Highest craft impression</span><span class="good">Perfectly even hierarchy</span><span class="warn">Desktop-only effect</span><span class="warn">No visual hierarchy between services</span></div>
+</section>
+<section class="sec" style="background:var(--bone)"><div class="container">
+  <p class="eyebrow"><i class="star"></i> What we do</p>
+  <h2 class="display-2" style="margin-top:.8rem">Nine services, nine places to start</h2>
+  <div class="tiltgrid" id="tilt"></div>
+</div></section>
+
+<!-- ============================================================ 4 -->
+<section class="plate" id="o4">
+  <span class="tag">Option 4 · ScrollX <em>Reel / Carousel</em></span>
+  <h2>Filmstrip reel</h2>
+  <p>Nine tall poster cards on one horizontal track you drag, scroll or arrow through, with snap points. It gives every service identical, generous treatment and turns the section into something you play with rather than scan. It also takes far less vertical space than any grid — useful given how long the homepage already is.</p>
+  <div class="meta"><span class="good">Shortest section vertically</span><span class="good">Every service equal and large</span><span class="good">Genuinely fun to use</span><span class="warn">Services 4–9 are off-screen at rest</span></div>
+</section>
+<section class="sec" style="background:var(--bone)"><div class="container">
+  <p class="eyebrow"><i class="star"></i> What we do</p>
+  <h2 class="display-2" style="margin-top:.8rem">Nine services, nine places to start</h2>
+  <div class="reelhead">
+    <p class="lede" style="margin:0">Drag the strip, scroll it sideways, or use the arrows.</p>
+    <div class="reelnav"><button data-dir="-1" aria-label="Previous">←</button><button data-dir="1" aria-label="Next">→</button></div>
+  </div>
+  <div class="reel" id="reel"></div>
+</div></section>
+
+<!-- ============================================================ 5 -->
+<section class="plate" id="o5">
+  <span class="tag">Option 5 · ScrollX <em>Spotlight / Cursor Highlight</em></span>
+  <h2>Focus spotlight grid</h2>
+  <p>An even 3×3 grid that behaves like a rack of slides on a lightbox: touch any one and the other eight blur, desaturate and recede, while the focused card lifts forward and opens its summary. It is the strongest attention mechanic of the five — the page physically directs the eye to whatever the visitor is considering — and it degrades to a plain, perfectly usable photo grid on touch devices.</p>
+  <div class="meta"><span class="good">Strongest attention control</span><span class="good">Clean at rest, dramatic on use</span><span class="good">Even treatment for all 9</span><span class="warn">Blur is GPU work on weak laptops</span></div>
+</section>
+<section class="sec" style="background:var(--bone)"><div class="container">
+  <p class="eyebrow"><i class="star"></i> What we do</p>
+  <h2 class="display-2" style="margin-top:.8rem">Nine services, nine places to start</h2>
+  <p class="lede">Everything below has its own page with real detail — what is included, what it costs you to skip it, and when in a Spokane year it should happen.</p>
+  <div class="focusgrid" id="focus"></div>
+</div></section>
+
+<footer class="foot">
+  All five use your nine real services, real summaries and real photographs, in Fraunces / Archivo on the exact palette from <code>globals.css</code>.<br>
+  Resize the window — every option is responsive. Tell me a number and I'll build it.
+</footer>
+
+<script>
+const S=[
+ {n:"Lawn Maintenance",s:"Weekly mowing, edging, trimming, blow-off and clippings haul-off — one crew, one visit, nothing left behind.",i:"striped-lawn-barn.jpg",d:"projects"},
+ {n:"Irrigation & Sprinkler Repair",s:"Broken heads, dead zones, valve and controller failures, coverage problems, blowouts and full system installs.",i:"irrigation.jpg",d:"services"},
+ {n:"Landscape Design & Installation",s:"Bed rebuilds, rock and boulder work, retaining walls, plantings, mulch and gravel — designed and installed by one crew.",i:"boulder-slope-planting.jpg",d:"projects"},
+ {n:"Seasonal Clean-Ups",s:"Full-property reset in spring and fall — leaves, beds, debris and everything hauled away.",i:"side-yard-after.jpg",d:"projects"},
+ {n:"Commercial Snow Removal",s:"Parking lots, sidewalks, entrances and access areas cleared and de-iced for Spokane businesses and property managers.",i:"snow-plow-truck.jpg",d:"services"},
+ {n:"Sod Installation",s:"New sod lawns installed over properly prepped and graded ground, with irrigation coordinated before the first roll goes down.",i:"sod-lawn.jpg",d:"projects"},
+ {n:"Aeration & Overseeding",s:"Relieves compaction and thickens thin turf — the single highest-return thing you can do for an established Spokane lawn.",i:"striped-lawn-acreage.jpg",d:"projects"},
+ {n:"Dethatching",s:"Pulls out the dead layer strangling the lawn so water, air and nutrients reach the soil again.",i:"dethatching.jpg",d:"services"},
+ {n:"Residential Snow Removal",s:"Driveways, sidewalks and entryways cleared, with de-icing — on a seasonal agreement or call by call.",i:"snow-sidewalk.jpg",d:"services"}
+];
+const src=x=>`../public/images/${x.d}/${x.i}`;
+const LEARN='<span class="learn">Learn more <span>&rarr;</span></span>';
+
+/* 1 · bento */
+const spans=["b1","b2","b3","b3","b3","b3","b2","b3","b3"];
+document.getElementById("bento").innerHTML=S.map((x,k)=>`
+  <a class="${spans[k]} ${spans[k]==="b1"?"big":""}">
+    <span class="rule"></span>
+    <img loading="lazy" src="${src(x)}" alt="${x.n}">
+    <span class="scrim"></span>
+    <div class="body"><h3>${x.n}</h3><p>${x.s}</p>${LEARN}</div>
+  </a>`).join("");
+
+/* 2 · sticky stack */
+document.getElementById("stack").innerHTML=S.map((x,k)=>`
+  <div class="card" style="top:${5+k*.45}rem">
+    <div class="pic"><img loading="lazy" src="${src(x)}" alt="${x.n}"></div>
+    <div class="txt">
+      <span class="num">${String(k+1).padStart(2,"0")} / 09</span>
+      <h3>${x.n}</h3><p>${x.s}</p>${LEARN}
+    </div>
+  </div>`).join("");
+
+/* 3 · tilt */
+document.getElementById("tilt").innerHTML=S.map(x=>`
+  <div class="tiltwrap"><a class="tilt">
+    <img loading="lazy" src="${src(x)}" alt="${x.n}">
+    <span class="scrim"></span><span class="glare"></span>
+    <div class="body"><h3>${x.n}</h3><p>${x.s}</p>${LEARN}</div>
+  </a></div>`).join("");
+document.querySelectorAll(".tiltwrap").forEach(w=>{
+  const c=w.querySelector(".tilt"), g=w.querySelector(".glare");
+  w.addEventListener("mousemove",e=>{
+    const r=w.getBoundingClientRect();
+    const px=(e.clientX-r.left)/r.width, py=(e.clientY-r.top)/r.height;
+    c.style.transform=`rotateX(${(.5-py)*15}deg) rotateY(${(px-.5)*15}deg) scale(1.04)`;
+    g.style.setProperty("--gx",px*100+"%"); g.style.setProperty("--gy",py*100+"%");
+  });
+  w.addEventListener("mouseleave",()=>{c.style.transform="";});
+});
+
+/* 4 · filmstrip */
+const reel=document.getElementById("reel");
+reel.innerHTML=S.map((x,k)=>`
+  <a class="poster">
+    <span class="idx">${String(k+1).padStart(2,"0")}</span>
+    <img loading="lazy" src="${src(x)}" alt="${x.n}">
+    <span class="scrim"></span>
+    <div class="body"><h3>${x.n}</h3><p>${x.s}</p>${LEARN}</div>
+  </a>`).join("");
+document.querySelectorAll(".reelnav button").forEach(b=>{
+  b.onclick=()=>reel.scrollBy({left:b.dataset.dir*(reel.querySelector(".poster").offsetWidth+16),behavior:"smooth"});
+});
+let down=false,sx=0,sl=0;
+reel.addEventListener("pointerdown",e=>{down=true;sx=e.clientX;sl=reel.scrollLeft;reel.classList.add("drag")});
+addEventListener("pointerup",()=>{down=false;reel.classList.remove("drag")});
+reel.addEventListener("pointermove",e=>{if(down)reel.scrollLeft=sl-(e.clientX-sx)});
+
+/* 5 · focus */
+const fg=document.getElementById("focus");
+fg.innerHTML=S.map(x=>`
+  <a>
+    <img loading="lazy" src="${src(x)}" alt="${x.n}">
+    <span class="scrim"></span>
+    <div class="body"><h3>${x.n}</h3><p>${x.s}</p>${LEARN}</div>
+  </a>`).join("");
+fg.addEventListener("mouseenter",()=>fg.classList.add("hot"));
+fg.addEventListener("mouseleave",()=>fg.classList.remove("hot"));
+</script>
+</body>
+</html>

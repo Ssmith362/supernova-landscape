@@ -7,16 +7,22 @@ type Size = "md" | "lg";
 const base =
   "inline-flex items-center justify-center gap-2 rounded-xs font-semibold " +
   "transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] " +
-  // A restrained 1-2px lift on hover/focus, never on active (pressed sits flush).
-  "hover:-translate-y-px focus-visible:-translate-y-px active:translate-y-0 " +
+  // A restrained 1-2px lift on hover/focus, and a 150ms press-down on tap.
+  "hover:-translate-y-px focus-visible:-translate-y-px active:translate-y-0 active:scale-[0.985] " +
   // 48px minimum tap target on every variant.
   "min-h-12 text-center";
 
+/**
+ * `shiny` (see globals.css) adds the single specular sweep on hover/focus.
+ * It goes on the two SOLID variants only — on the outlined ghost/onDark
+ * variants a highlight passing over a transparent background reads as a
+ * glitch rather than a sheen.
+ */
 const variants: Record<Variant, string> = {
   primary:
-    "bg-gold-500 text-forest-950 shadow-card hover:bg-gold-400 hover:shadow-lift focus-visible:bg-gold-400 focus-visible:shadow-lift active:bg-gold-600 active:shadow-card",
+    "shiny bg-gold-500 text-forest-950 shadow-card hover:bg-gold-400 hover:shadow-lift focus-visible:bg-gold-400 focus-visible:shadow-lift active:bg-gold-600 active:shadow-card",
   secondary:
-    "bg-forest-600 text-white shadow-card hover:bg-forest-500 hover:shadow-lift focus-visible:bg-forest-500 focus-visible:shadow-lift active:bg-forest-700 active:shadow-card",
+    "shiny bg-forest-600 text-white shadow-card hover:bg-forest-500 hover:shadow-lift focus-visible:bg-forest-500 focus-visible:shadow-lift active:bg-forest-700 active:shadow-card",
   ghost:
     "border border-forest-600/35 bg-white text-forest-700 hover:border-forest-600 hover:bg-sage-50 focus-visible:border-forest-600 focus-visible:bg-sage-50",
   onDark:

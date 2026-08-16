@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Closing Presentation — Supernova Landscape &amp; OnPoint Trailer Repair | Spencer's Strategies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EFF1EC; --paper-2:#F8F9F6; --card:#FFFFFF;
+  --ink:#16211C; --ink-soft:#4E5B55; --ink-faint:#7C8880;
+  --green:#2F5D50; --green-deep:#1C3D35; --green-wash:#E3EAE5;
+  --orange:#E4761F; --orange-soft:#F09A52; --orange-wash:#FCEEE0;
+  --crit:#9E2B20; --rule:#D5DAD1; --rule-soft:#E4E8E1;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--paper);color:var(--ink);
+  font-family:"Public Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:clamp(15px,1.35vw,19px);line-height:1.6;-webkit-font-smoothing:antialiased;overflow:hidden}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+h1,h2,h3{font-family:"Bricolage Grotesque","Public Sans",sans-serif;font-weight:700;line-height:1.1;letter-spacing:-.02em;margin:0}
+p{margin:0 0 .9em}
+
+.deck{height:100vh;position:relative}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;padding:clamp(28px,4.5vh,54px) clamp(28px,6vw,90px);overflow-y:auto}
+.slide.on{display:flex;animation:fadein .45s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+.topbar{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:clamp(16px,3.5vh,38px);flex-shrink:0}
+.brand{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:.78rem;letter-spacing:.13em;text-transform:uppercase;color:var(--green-deep)}
+.slidetag{font-family:"IBM Plex Mono",monospace;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
+
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--orange);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.eyebrow::after{content:"";height:1px;flex:1;background:var(--rule);max-width:130px}
+h1{font-size:clamp(2rem,4.6vw,3.4rem);max-width:18ch;margin-bottom:18px}
+h2{font-size:clamp(1.6rem,3.4vw,2.5rem);max-width:24ch;margin-bottom:16px}
+.lede{font-size:clamp(1rem,1.55vw,1.22rem);color:var(--ink-soft);max-width:58ch}
+.big-num{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:clamp(2.4rem,5.5vw,4.2rem);letter-spacing:-.03em;line-height:1;color:var(--green-deep)}
+
+.cards{display:grid;gap:14px;margin-top:auto;padding-top:24px}
+.c2{grid-template-columns:repeat(2,1fr)}.c3{grid-template-columns:repeat(3,1fr)}.c4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:4px;padding:18px 20px}
+.card .k{font-family:"IBM Plex Mono",monospace;font-size:.63rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:6px}
+.card .v{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:clamp(1.3rem,2.4vw,2rem);letter-spacing:-.02em}
+.card .d{font-size:.85rem;color:var(--ink-soft);margin-top:6px;line-height:1.45}
+.card.hot{background:var(--orange-wash);border-color:var(--orange-soft)}
+.card.hot .v{color:var(--orange)}
+.card.deep{background:var(--green-deep);border-color:var(--green-deep);color:#fff}
+.card.deep .k{color:#9FC3B5}.card.deep .d{color:#C9D8D0}
+.card.crit .v{color:var(--crit)}
+
+.cover{margin:auto 0}
+.cover .accent{width:64px;height:5px;background:linear-gradient(90deg,var(--orange),var(--green));margin-bottom:26px;border-radius:2px}
+.meta{display:flex;gap:clamp(20px,4vw,54px);border-top:1px solid var(--rule);padding-top:20px;margin-top:34px;flex-wrap:wrap}
+.meta div span{display:block;font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:3px}
+.meta div strong{font-weight:600;font-size:.92rem}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,3vw,44px);margin-top:auto;padding-top:20px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--rule);border-radius:4px;padding:clamp(18px,2.5vw,30px)}
+.panel h3{font-size:1.05rem;margin-bottom:12px}
+.panel.bad{border-top:4px solid var(--crit)}
+.panel.good{border-top:4px solid var(--green)}
+ul.tick,ul.cross{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px}
+ul.tick li,ul.cross li{padding-left:26px;position:relative;font-size:.93rem;line-height:1.45}
+ul.cross li::before{content:"✕";position:absolute;left:0;color:var(--crit);font-weight:700}
+ul.tick li::before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:700}
+
+table{border-collapse:collapse;width:100%;background:var(--card);border:1px solid var(--rule);border-radius:4px;overflow:hidden;font-size:.95rem}
+th{font-family:"IBM Plex Mono",monospace;font-size:.63rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-faint);text-align:left;padding:12px 18px;background:var(--paper-2);border-bottom:1px solid var(--rule)}
+td{padding:14px 18px;border-bottom:1px solid var(--rule-soft)}
+tr:last-child td{border-bottom:none}
+tr.hl td{background:var(--orange-wash);font-weight:600}
+.mono-strong{font-family:"IBM Plex Mono",monospace;font-weight:500;color:var(--green-deep)}
+
+.demo-cue{margin:auto;text-align:center;max-width:760px}
+.demo-cue .pulse{display:inline-flex;align-items:center;gap:10px;font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--orange);border:1px solid var(--orange-soft);background:var(--orange-wash);padding:9px 18px;border-radius:100px;margin-bottom:28px}
+.demo-cue .pulse::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--orange);animation:blink 1.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+.footer-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px clamp(28px,6vw,90px);pointer-events:none;z-index:10}
+.counter{font-family:"IBM Plex Mono",monospace;font-size:.68rem;color:var(--ink-faint);letter-spacing:.1em}
+.navbtns{display:flex;gap:8px;pointer-events:auto}
+.navbtns button{font-family:"IBM Plex Mono",monospace;font-size:.75rem;background:var(--card);border:1px solid var(--rule);color:var(--ink-soft);width:38px;height:34px;border-radius:5px;cursor:pointer;transition:.15s}
+.navbtns button:hover{border-color:var(--green);color:var(--green-deep)}
+.progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--orange),var(--green));transition:width .3s ease;z-index:20}
+
+.stars{color:var(--orange);letter-spacing:2px}
+.quiet{color:var(--ink-faint);font-size:.85rem}
+.callout{background:var(--orange-wash);border:1px solid var(--orange-soft);border-radius:4px;padding:16px 20px;margin-top:18px;font-size:.95rem;max-width:70ch}
+.callout .mono{font-size:.63rem;letter-spacing:.13em;text-transform:uppercase;color:var(--orange);display:block;margin-bottom:6px}
+
+@media print{
+  body{overflow:visible}
+  .deck{height:auto}
+  .slide{position:static;display:flex!important;height:100vh;page-break-after:always;overflow:hidden}
+  .footer-nav,.progress{display:none}
+}
+@media (max-width:760px){
+  body{overflow:auto}
+  .slide{position:static;display:flex!important;min-height:100vh;height:auto}
+  .footer-nav,.progress{display:none}
+  .c2,.c3,.c4,.split{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="deck" id="deck">
+
+<!-- 1 · COVER -->
+<section class="slide on">
+  <div class="topbar"><span class="brand">Spencer's Strategies</span><span class="slidetag">Closing Presentation</span></div>
+  <div class="cover">
+    <div class="accent"></div>
+    <div class="eyebrow">Two businesses · One decision</div>
+    <h1>You built two good businesses. Let's make both of them findable.</h1>
+    <p class="lede">We audited both websites, page by page. One is already rebuilt and ready to show you. The other is quietly turning customers away every day — and it's the faster, cheaper fix of the two.</p>
+    <div class="meta">
+      <div><span>Prepared for</span><strong>Supernova Landscape &amp; OnPoint Trailer Repair</strong></div>
+      <div><span>Prepared by</span><strong>Spencer's Strategies</strong></div>
+      <div><span>Date</span><strong>August 14, 2026</strong></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 · WHERE WE ARE -->
+<section class="slide">
+  <div class="topbar"><span class="brand">Spencer's Strategies</span><span class="slidetag">01 · Where we are</span></div>
+  <div class="eyebrow">The work so far</div>
+  <h2>Two full audits. 64 findings. One site already rebuilt.</h2>
+  <p class="lede">This isn't a sales meeting that starts from zero. The diagnostic work is done for both businesses, and the Supernova build is finished.</p>
+  <div class="cards c3">
+    <div class="card"><div class="k">Supernova Landscape audit</div><div class="v">34 findings</div><div class="d">5 critical — including a phone number a customer on a phone can't tap.</div></div>
+    <div class="card"><div class="k">OnPoint Trailer Repair audit</div><div class="v">30 findings</div><div class="d">3 critical — including one setting that hides the entire site from Google.</div></div>
+    <div class="card deep"><div class="k">Supernova rebuild</div><div class="v">Done ✓</div><div class="d">Built and ready to walk through today, live.</div></div>
+  </div>
+</section>
+
+<!-- 3 · SUPERNOVA: BEFORE -->
+<section class="slide">
+  <div class="topbar"><span class="brand">Spencer's Strategies</span><span class="slidetag">02 · Supernova — before</span></div>
+  <div class="eyebrow">Supernova Landscape</div>
+  <h2>The old site was hiding your best asset.</h2>
+  <p class="lede">A <strong>4.9-star average across 53 Google reviews</strong> — top-tier for Spokane — and the site showed one testimonial and no way to call you from a phone.</p>
+  <div class="split">
+    <div class="panel bad">
+      <h3>The old site</h3>
+      <ul class="cross">
+        <li>No tappable phone number anywhere — tapping the number did nothing</li>
+        <li>1 testimonial shown, 52 reviews invisible. No rating, no review links</li>
+        <li>9 services crammed onto one page — no page for "sprinkler repair Spokane" to find</li>
+        <li>Quote form hidden in a pop-up you can't advertise to</li>
+      </ul>
+    </div>
+    <div class="panel good">
+      <h3>The new build</h3>
+      <ul class="tick">
+        <li>Tap-to-call on every page — the dialer opens, the call happens</li>
+        <li><span class="stars">★★★★★</span> 4.9 rating front and center, linked to Google</li>
+        <li>A page per service, built to win those searches</li>
+        <li>A clear path from any page to a phone call or quote</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · DEMO CUE -->
+<section class="slide">
+  <div class="topbar"><span class="brand">Spencer's Strategies</span><span class="slidetag">03 · Live demo</span></div>
+  <div class="demo-cue">
+    <div class="pulse">Switching to the live site</div>
+    <h1 style="max-width:100%">Don't take my word for it.<br>Here's the new Supernova site.</h1>
+    <p class="lede" style="margin:18px auto 0">Pull out your phone while I drive — tap the number, check the reviews, find a service. Everything the audit flagged, fixed.</p>
+  </div>
+</section>
+
+<!-- 5 · PIVOT TO ONPOINT -->
+<section class="slide">
+  <div class="topbar"><span class="brand">Spencer's Strategies</span><span class="slidetag">04 · OnPoint</span></div>
+  <div class="eyebrow">Now — OnPoint Trailer Repair</div>
+  <h2>Here's the part that surprised me: OnPoint's problem is worse — and easier to fix.</h2>
+  <p class="lede">The OnPoint site is genuinely well written. Real job photos, specific service copy, a working tap-to-call link. It's better raw material than most sites I audit. But three leftover settings are cancelling all of it:</p>
+  <div class="cards c3">
+    <div class="card crit"><div class="k">Critical · Every page</div><div class="v">"Do not index"</div><div class="d">A hidden instruction tells Google to skip all 3 pages. A search for "trailer repair Spokane" <em>cannot</em> return your site. At all.</div></div>
+    <div class="card crit"><div class="k">Critical · Every share</div><div class="v">"M&amp;S Contractors"</div><div class="d">Post your link on Facebook or text it to a customer, and the preview shows another company's name — a template leftover.</div></div>
+    <div class="card crit"><div class="k">Critical · Every phone</div><div class="v">Zoom disabled</div><div class="d">Customers can't pinch-to-zoom your address, map, or number on the device nearly all of them use.</div></div>
+  </div>
+  <div class="callout"><span class="mono">The bottom line</span>You're currently paying for a website that Google has been told to ignore. Every month it stays this way, "trailer repair near me" searches in Spokane go to somebody else.</div>
+</section>
+
+<!-- 6 · ONPOINT UPSIDE -->
+<section class="slide">
+  <div class="topbar"><span class="brand">Spencer's Strategies</span><span class="slidetag">05 · The window</span></div>
+  <div class="eyebrow">Why now, not later</div>
+  <h2>Supernova took years to earn 53 reviews. OnPoint is earning them at one year old.</h2>
+  <p class="lede">Five-star reviews are already landing on Google, Facebook, and the trade directories — and the site shows none of them, to visitors who mostly can't find it anyway. OnPoint is exactly where Supernova was years ago. The difference is you now know what the site should have been doing that whole time.</p>
+  <div class="cards c4">
+    <div class="card"><div class="k">Reviews shown on site</div><div class="v">0</div><div class="d">Out of every five-star review earned so far.</div></div>
+    <div class="card"><div class="k">Services on one page</div><div class="v">15</div><div class="d">Not one has a page Google can rank for it.</div></div>
+    <div class="card"><div class="k">Pages visible to Google</div><div class="v">0 of 3</div><div class="d">Until the "do not index" flag comes off.</div></div>
+    <div class="card hot"><div class="k">Job photos already taken</div><div class="v">10</div><div class="d">A portfolio waiting to be used. The raw material is there.</div></div>
+  </div>
+</section>
+
+<!-- 7 · THE MATH -->
+<section class="slide">
+  <div class="topbar"><span class="brand">Spencer's Strategies</span><span class="slidetag">06 · The numbers</span></div>
+  <div class="eyebrow">Investment</div>
+  <h2>Doing both together costs less — on purpose.</h2>
+  <p class="lede">The bundle rate only exists when both businesses sign on together. Add OnPoint later and it's full price.</p>
+  <div style="margin-top:auto;padding-top:20px">
+  <table>
+    <thead><tr><th>Scope</th><th>Build fee</th><th>Monthly</th><th>Term</th></tr></thead>
+    <tbody>
+      <tr><td>Supernova only</td><td><strong>$800</strong></td><td><strong>$298/mo</strong></td><td>12 months</td></tr>
+      <tr><td>OnPoint added later</td><td><strong>+$800</strong></td><td><strong>+$298/mo</strong></td><td>12 months</td></tr>
+      <tr class="hl"><td>Both, together <span class="quiet">(bundle rate)</span></td><td><span class="mono-strong">$600 each — $1,200 total</span></td><td><span class="mono-strong">$499/mo total</span></td><td>12 months</td></tr>
+    </tbody>
+  </table>
+  <div class="cards c3" style="margin-top:14px">
+    <div class="card"><div class="k">Build savings</div><div class="v">$400</div><div class="d">$600 per site instead of $800.</div></div>
+    <div class="card"><div class="k">Monthly savings</div><div class="v">$97/mo</div><div class="d">$499 for both instead of $596.</div></div>
+    <div class="card hot"><div class="k">First-year savings</div><div class="v">$1,564</div><div class="d">OnPoint's whole build fee — and then some — earned back by bundling.</div></div>
+  </div>
+  </div>
+</section>
+
+<!-- 8 · WHAT MONTHLY BUYS -->
+<section class="slide">
+  <div class="topbar"><span class="brand">Spencer's Strategies</span><span class="slidetag">07 · The partnership</span></div>
+  <div class="eyebrow">What the monthly covers</div>
+  <h2>The site going live is the start, not the finish.</h2>
+  <p class="lede">A website that isn't maintained starts losing ground the day it launches. Every month, for both businesses:</p>
+  <div class="cards c4">
+    <div class="card"><div class="k">Maintenance &amp; hosting</div><div class="v">Always on</div><div class="d">Fast, secure, backed up. If something breaks, it's fixed before you notice.</div></div>
+    <div class="card"><div class="k">Monthly blog post</div><div class="v">Fresh content</div><div class="d">Locally relevant — gives Google a reason to keep showing your site.</div></div>
+    <div class="card"><div class="k">Ongoing SEO</div><div class="v">Managed</div><div class="d">Google Business Profile, local rankings, on-page content — worked every month.</div></div>
+    <div class="card"><div class="k">Monthly report</div><div class="v">Plain English</div><div class="d">What the site did, what moved, what's next. You always know what you're paying for.</div></div>
+  </div>
+  <div class="callout"><span class="mono">Zero-risk start</span>Either business can cancel within the first 30 days of the monthly partnership — no questions asked. If it's not the right fit, you've lost nothing.</div>
+</section>
+
+<!-- 9 · THE ASK -->
+<section class="slide">
+  <div class="topbar"><span class="brand">Spencer's Strategies</span><span class="slidetag">08 · Next steps</span></div>
+  <div class="eyebrow">The ask</div>
+  <h2>Sign both today. Here's what happens next.</h2>
+  <div class="cards c3" style="margin-top:26px">
+    <div class="card"><div class="k">This week</div><div class="v">Supernova live</div><div class="d">The new site you just saw goes live. Tap-to-call fix carried everywhere.</div></div>
+    <div class="card"><div class="k">Week one</div><div class="v">OnPoint visible</div><div class="d">The "do not index" flag comes off, the "M&amp;S Contractors" name is gone, zoom works. Google can finally see the site.</div></div>
+    <div class="card"><div class="k">Then</div><div class="v">OnPoint rebuilt</div><div class="d">The same treatment Supernova just got: reviews shown, a page per service, built to be found.</div></div>
+  </div>
+  <div class="split" style="margin-top:20px">
+    <div class="panel">
+      <h3>Sign both today</h3>
+      <ul class="tick">
+        <li>$1,200 to build both · $499/mo total</li>
+        <li>$1,564 saved in year one</li>
+        <li>30-day no-questions cancel on the monthly</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Supernova only</h3>
+      <ul class="cross">
+        <li>$800 build · $298/mo</li>
+        <li>Bundle rate is gone — OnPoint later costs $800 + $298/mo</li>
+        <li>OnPoint stays invisible on Google in the meantime</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 10 · CLOSE -->
+<section class="slide">
+  <div class="topbar"><span class="brand">Spencer's Strategies</span><span class="slidetag">Thank you</span></div>
+  <div class="cover" style="margin:auto 0">
+    <div class="accent"></div>
+    <h1>Let's put both businesses on the map.</h1>
+    <p class="lede">Supernova's site is ready to launch. OnPoint's fix starts the day you say go.</p>
+    <div class="meta">
+      <div><span>Spencer's Strategies</span><strong>(208) 964-1471</strong></div>
+      <div><span>Email</span><strong>spencers.strategies@gmail.com</strong></div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div class="footer-nav">
+  <span class="counter" id="counter">1 / 10</span>
+  <div class="navbtns">
+    <button id="prev" aria-label="Previous slide">←</button>
+    <button id="next" aria-label="Next slide">→</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var slides=document.querySelectorAll('.slide'),i=0;
+  function show(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach(function(s,j){s.classList.toggle('on',j===i)});
+    document.getElementById('counter').textContent=(i+1)+' / '+slides.length;
+    document.getElementById('progress').style.width=((i+1)/slides.length*100)+'%';
+  }
+  document.getElementById('next').onclick=function(){show(i+1)};
+  document.getElementById('prev').onclick=function(){show(i-1)};
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(i+1)}
+    if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(i-1)}
+    if(e.key==='Home')show(0); if(e.key==='End')show(slides.length-1);
+  });
+  document.getElementById('deck').addEventListener('click',function(e){
+    if(e.target.closest('a,button,table'))return;
+    show(i+1);
+  });
+  show(0);
+})();
+</script>
+</body>
+</html>

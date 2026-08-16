@@ -33,9 +33,7 @@ export function PageHeader({
           <Breadcrumbs crumbs={crumbs} />
           <div className="mt-6 max-w-3xl">
             {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-            <h1 className="mt-3 text-[2.1rem] leading-[1.08] text-ink sm:text-[2.9rem]">
-              {title}
-            </h1>
+            <h1 className="display-page mt-3.5 text-ink">{title}</h1>
             {lede && (
               <div className="mt-5 text-[1.08rem] leading-relaxed text-ink-soft">
                 {lede}
@@ -71,9 +69,7 @@ export function PageHeader({
         <Breadcrumbs crumbs={crumbs} tone="dark" />
         <div className="mt-6 max-w-3xl">
           {eyebrow && <p className="eyebrow eyebrow-light">{eyebrow}</p>}
-          <h1 className="mt-3 text-[2.1rem] leading-[1.08] text-white sm:text-[2.9rem]">
-            {title}
-          </h1>
+          <h1 className="display-page mt-3.5 text-white">{title}</h1>
           {lede && (
             <div className="mt-5 max-w-2xl text-[1.08rem] leading-relaxed text-sage-100">
               {lede}

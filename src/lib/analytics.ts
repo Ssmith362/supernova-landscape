@@ -11,6 +11,11 @@
  *   quote_start     — first interaction with the quote form
  *   quote_submit    — quote form passed validation and was submitted
  *   quote_cta_click — any "Get a free estimate" button (params: location)
+ *   hero_rail_click — a service tapped on the hero rail  (params: service)
+ *
+ * `hero_rail_click` is worth watching on its own: the hero rail exists on the
+ * argument that four named services convert better than a rotating carousel,
+ * and this is the number that either supports that or doesn't.
  */
 
 type GtagParams = Record<string, string | number | boolean | undefined>;
@@ -26,7 +31,8 @@ export type AnalyticsEvent =
   | "phone_click"
   | "quote_start"
   | "quote_submit"
-  | "quote_cta_click";
+  | "quote_cta_click"
+  | "hero_rail_click";
 
 export function trackEvent(name: AnalyticsEvent, params: GtagParams = {}) {
   if (typeof window === "undefined") return;

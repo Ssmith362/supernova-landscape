@@ -26,17 +26,21 @@ export function BeforeAfter({
   label,
   sizes = "(max-width: 768px) 100vw, 50vw",
   priority = false,
+  tone = "light",
 }: {
   before: ImageRef;
   after: ImageRef;
   label: string;
   sizes?: string;
   priority?: boolean;
+  /** `dark` frames the comparison for the night register. */
+  tone?: "light" | "dark";
 }) {
   const [pos, setPos] = useState(50);
   const id = useId();
   const { ref, state } = useReveal<HTMLElement>();
   const settled = state !== "pending";
+  const dark = tone === "dark";
 
   // Subtle, not disappearing — a label never drops below 55% opacity, so it
   // stays readable even at the extremes of the slider.
@@ -46,7 +50,9 @@ export function BeforeAfter({
   return (
     <figure ref={ref} className="group">
       <div
-        className="relative overflow-hidden bg-sage-100 select-none"
+        className={`relative select-none overflow-hidden rounded-xs ${
+          dark ? "hairline-dark bg-forest-900" : "hairline bg-sage-100"
+        }`}
         style={{ aspectRatio: "4 / 3" }}
       >
         {/* AFTER sits underneath and is fully visible at the right edge. */}
@@ -81,7 +87,7 @@ export function BeforeAfter({
           style={{ left: `${pos}%` }}
         >
           <span
-            className={`absolute top-1/2 left-1/2 grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-2 border-white bg-forest-900/85 text-white shadow-lift transition-shadow duration-200 group-has-[input:focus-visible]:shadow-[0_0_0_3px_white,0_0_0_7px_#e0a02a] ${
+            className={`absolute top-1/2 left-1/2 grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-2 border-gold-200 bg-gold-500 text-forest-950 shadow-lift transition-shadow duration-200 group-has-[input:focus-visible]:shadow-[0_0_0_3px_white,0_0_0_7px_#e0a02a] ${
               settled ? "handle-pulse" : ""
             }`}
           >
@@ -99,7 +105,7 @@ export function BeforeAfter({
         </div>
 
         <span
-          className="pointer-events-none absolute left-3 top-3 bg-forest-950/80 px-2.5 py-1 text-[0.7rem] font-bold uppercase tracking-[0.12em] text-white transition-[opacity,transform] duration-500"
+          className="glass pointer-events-none absolute left-3 top-3 rounded-xs px-2.5 py-1 text-[0.7rem] font-bold uppercase tracking-[0.12em] text-white transition-[opacity,transform] duration-500"
           style={{
             opacity: state === "pending" ? 0 : beforeOpacity,
             transform: state === "pending" ? "translateY(-6px)" : "translateY(0)",
@@ -108,7 +114,7 @@ export function BeforeAfter({
           Before
         </span>
         <span
-          className="pointer-events-none absolute right-3 top-3 bg-gold-500 px-2.5 py-1 text-[0.7rem] font-bold uppercase tracking-[0.12em] text-forest-950 transition-[opacity,transform] duration-500"
+          className="pointer-events-none absolute right-3 top-3 rounded-xs bg-gold-500 px-2.5 py-1 text-[0.7rem] font-bold uppercase tracking-[0.12em] text-forest-950 transition-[opacity,transform] duration-500"
           style={{
             opacity: state === "pending" ? 0 : afterOpacity,
             transform: state === "pending" ? "translateY(-6px)" : "translateY(0)",
@@ -135,7 +141,9 @@ export function BeforeAfter({
           className="ba-range absolute inset-0 h-full w-full cursor-ew-resize appearance-none bg-transparent outline-none [&::-moz-range-thumb]:h-full [&::-moz-range-thumb]:w-11 [&::-moz-range-thumb]:cursor-ew-resize [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-transparent [&::-webkit-slider-thumb]:h-full [&::-webkit-slider-thumb]:w-11 [&::-webkit-slider-thumb]:cursor-ew-resize [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-transparent"
         />
       </div>
-      <figcaption className="mt-3 text-[0.9rem] text-ink-muted">
+      <figcaption
+        className={`mt-3 text-[0.9rem] ${dark ? "text-sage-300" : "text-ink-muted"}`}
+      >
         {label}
       </figcaption>
     </figure>
