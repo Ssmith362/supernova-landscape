@@ -30,8 +30,7 @@ Next.js 15.5 · App Router · TypeScript · Tailwind CSS 4 · deployed to Vercel
 >   a silent failure mode (see the note in section 2).
 
 Built to replace the four-page Webflow site, addressing the 34 findings in the
-July 2026 audit. See [`AUDIT-RESOLUTION.md`](./AUDIT-RESOLUTION.md) for the
-finding-by-finding record, and
+July 2026 audit. See
 [`content/needs-confirmation.md`](./content/needs-confirmation.md) for
 everything still waiting on the client.
 
@@ -452,8 +451,7 @@ src/
 
 scripts/
 ├── process-images.mjs          # Import and optimise photography
-├── generate-og.mjs             # Build the branded share card
-└── audit-site.mjs              # Pre-launch crawler
+└── generate-og.mjs             # Build the branded share card
 ```
 
 ### Notes on a few decisions

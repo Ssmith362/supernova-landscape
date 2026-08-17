@@ -38,3 +38,6 @@ yarn-error.log*
 
 # os / cloud sync noise
 desktop.ini
+
+# local archive — non-code material kept out of the repo
+/_archive/

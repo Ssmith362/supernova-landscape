@@ -49,7 +49,6 @@ const PHOTOS = [
 
 const LOGOS = [
   ["logo-full.png", "brand/logo.png", 900],
-  ["logo-text.png", "brand/wordmark.png", 900],
 ];
 
 /**
@@ -61,7 +60,6 @@ const LOGOS = [
  * [sourceFile, outputPath, width, height]
  */
 const HEROES = [
-  ["clean-landscape.jpg", "images/heroes/home.jpg", 2400, 1000],
   ["mowing-2.jpg", "images/heroes/services.jpg", 2400, 1000],
   ["after-2.jpg", "images/heroes/projects.jpg", 2400, 1000],
   ["snow-plow-truck.jpg", "images/heroes/commercial-snow.jpg", 2400, 1000],
